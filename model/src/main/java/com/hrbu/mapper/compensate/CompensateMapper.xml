@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.compensate.CompensateMapper">
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        select count(1) from t_compensate
+        <where>
+            <if test="userId != null and userId != ''">
+                and userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>
+    </select>
+
+    <!--客户看的-->
+    <select id="selectCompensate" parameterType="java.util.HashMap" resultMap="compensateWithOrder">
+        select  compensateId,t_order.orderId,compensateName, compensateMoney, compensateTime,compensateStatus
+        from t_compensate, t_order
+        <where>
+            t_order.orderId = t_compensate.orderId
+            <if test="userId != null and userId != ''">
+                and t_compensate.userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and t_order.orderId=#{orderId}
+            </if>
+        </where>
+        order by compensateTime desc,t_order.orderId desc limit #{pageRow},9
+    </select>
+    <resultMap id="compensateWithOrder" type="com.hrbu.domain.Order">
+        <id property="orderId" column="orderId"/>
+        <collection property="compensate" ofType="com.hrbu.domain.Compensate">
+            <id column="compensateId" property="compensateId"/>
+            <result property="compensateName" column="compensateName"/>
+            <result property="compensateMoney" column="compensateMoney"/>
+            <result property="compensateTime" column="compensateTime"/>
+            <result property="compensateStatus" column="compensateStatus"/>
+        </collection>
+    </resultMap>
+
+    <!--理赔验证订单号  投诉状态可理赔-->
+    <select id="compensateVerifyOrderId" parameterType="java.lang.String" resultMap="complaintWithOrder">
+        select  complaintId,t_order.orderId,t_complaint.status
+        from t_complaint,t_order
+        where t_order.orderId = t_complaint.orderId and t_order.orderId=#{orderId}
+    </select>
+    <resultMap id="complaintWithOrder" type="com.hrbu.domain.Order">
+        <id property="orderId" column="orderId"/>
+        <collection property="complaint" ofType="com.hrbu.domain.Complaint">
+            <result property="status" column="status"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectCompensateById" parameterType="java.lang.String" resultType="com.hrbu.domain.Order">
+        select * from t_compensate where orderId = #{orderId}
+    </select>
+
+    <!-- 默认compansateStatus-->
+    <insert id="insertCompensate" parameterType="java.util.HashMap">
+        insert into t_compensate (compensateId,orderId,userId,compensateName,compensateMoney,compensateTime)
+        values (#{compensateId},#{orderId},#{userId},#{compensateName},#{compensateMoney},#{compensateTime})
+    </insert>
+
+    <delete id="cancel" parameterType="java.lang.String">
+        delete from t_compensate where orderId = #{orderId}
+    </delete>
+
+    <update id="updateCompensate" parameterType="java.util.HashMap">
+        update t_compensate set compensateMoney = #{compensateMoney}, compensateStatus = #{compensateStatus}
+        where orderId = #{orderId}
+    </update>
+
+    <select id="selectMoneyById" parameterType="java.lang.String" resultType="java.lang.String">
+        select compensateMoney from t_compensate where orderId = #{orderId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.train.TrainMapper">
+
+    <!--查数据的总条数   param参数 用于根据条件查询出的结果的总条数 分页bug-->
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        select count(traId) from t_trains, t_organize
+        <where>
+            t_trains.orgId = t_organize.orgId
+            <if test="traName != null and traName != ''">
+                and traName=#{traName}
+            </if>
+
+            <if test="orgName != null and orgName != ''">
+                and orgName=#{orgName}
+            </if>
+        </where>
+    </select>
+
+    <!--查询数据 参数用于条件查询 按时间降序-->
+    <select id="findTrainList" parameterType="java.util.HashMap" resultMap="trainWithOrg">
+        SELECT traId,t_trains.orgId,traName,orgname,t_trains.createTime FROM t_organize ,t_trains
+        <where>
+            t_trains.orgId = t_organize.orgId
+            <if test="traName != null and traName != ''">
+                and traName=#{traName}
+            </if>
+
+            <if test="orgName != null and orgName != ''">
+                and orgName=#{orgName}
+            </if>
+        </where>
+        order by t_trains.createTime desc limit #{pageRow},9
+    </select>
+    <resultMap id="trainWithOrg" type="com.hrbu.domain.Organize">
+        <id property="orgId" column="orgId"/>
+        <result property="orgName" column="orgName"/>
+        <collection property="train" ofType="com.hrbu.domain.Train" >
+            <id property="traId" column="traId"/>
+            <result property="traName" column="traName"/>
+            <result property="createTime" column="createTime"/>
+        </collection>
+    </resultMap>
+
+    <!-- 用于 快运班列 下拉选 时关联所属机构 查机构表-->
+    <select id="selectOrg" resultType="com.hrbu.domain.Organize">
+        select  orgId, orgName from t_organize
+    </select>
+
+    <!-- 用于 快运班列 下拉选 修改时关联所属机构 查机构表-->
+    <select id="selectOrgById" parameterType="String" resultType="com.hrbu.domain.Organize">
+        select  orgId, orgName from t_organize where orgId = #{orgId}
+    </select>
+
+    <select id="selectTrainById" parameterType="String" resultType="com.hrbu.domain.Train">
+        select traId, traName from t_trains where traId = #{traId}
+    </select>
+
+    <insert id="saveTrain" parameterType="java.util.HashMap">
+        INSERT INTO t_trains (traId,traName,createTime,orgId)VALUES(#{traId},#{traName},#{createTime},#{orgId})
+    </insert>
+
+    <delete id="deleteTrain" parameterType="String">
+       DELETE FROM t_trains WHERE traId = #{traId}
+    </delete>
+    <delete id="deleteTrainWay" parameterType="String">
+       DELETE FROM t_way WHERE traId = #{traId}
+    </delete>
+    
+    <update id="updateTrain" parameterType="java.util.HashMap">
+        UPDATE t_trains SET traName = #{traName},orgId = #{orgId} WHERE traId = #{traId}
+    </update>
+
+
+
+
+</mapper>

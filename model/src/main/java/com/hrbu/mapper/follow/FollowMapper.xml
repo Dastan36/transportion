@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.follow.FollowMapper">
+
+    <select id="selectOrderCById" parameterType="java.lang.String" resultType="com.hrbu.domain.Order">
+        select senderStation ,receiptStation from t_order where orderId = #{orderId}
+    </select>
+
+    <select id="selectCoordinate" parameterType="java.util.ArrayList" resultType="com.hrbu.domain.Station">
+        select coordinate_l ,coordinate_r from t_station where stationName in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+ </mapper>

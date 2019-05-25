@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.organize.OrganizeMapper">
+    <!--查数据的总条数  -->
+    <select id="selectCount" resultType="int">
+        select count(1) from t_organize
+    </select>
+
+    <!--查询数据 参数用于条件查询 按时间降序-->
+    <select id="findOrgList" parameterType="java.lang.Integer" resultType="com.hrbu.domain.Organize">
+        SELECT * FROM t_organize
+        order by createTime desc limit #{pageRow},9
+    </select>
+
+    <select id="findOrgById" parameterType="java.lang.String" resultType="com.hrbu.domain.Organize">
+        SELECT * FROM t_organize where orgId = #{orgId}
+    </select>
+
+    <insert id="saveOrg" parameterType="com.hrbu.domain.Organize">
+      insert into t_organize (orgId,orgName,createTime) VALUES(#{orgId},#{orgName},#{createTime})
+    </insert>
+
+    <delete id="deleteOrg" parameterType="java.lang.String">
+        delete from t_organize where orgId = #{orgId}
+    </delete>
+
+    <update id="updateOrg" parameterType="com.hrbu.domain.Organize">
+        UPDATE t_organize SET orgName = #{orgName} WHERE orgId = #{orgId}
+    </update>
+
+
+</mapper>

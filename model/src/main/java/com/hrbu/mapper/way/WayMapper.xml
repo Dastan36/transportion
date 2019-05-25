@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.way.WayMapper">
+
+    <!--查数据的总条数   param参数 用于根据条件查询出的结果的总条数 分页bug-->
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        SELECT COUNT(b.traId) FROM (
+            SELECT a.traId,a.traName,a.createTime FROM (
+                SELECT t_way.wayId,t_trains.traId,traName,t_trains.createTime FROM t_way ,t_trains
+                    <where>
+                        t_trains.traId = t_way.traId
+                        <if test="traName != null and traName != ''">
+                            and traName=#{traName}
+                        </if>
+                    </where>
+            )AS a GROUP BY a.traId,a.traName,a.createTime
+        ) AS b
+    </select>
+
+    <!--查询数据 参数用于条件查询 按时间降序-->
+    <select id="findWayList" parameterType="java.util.HashMap" resultMap="trainWithWay">
+        select a.traId,a.traName,a.createTime from (
+        SELECT t_way.wayId,t_trains.traId,traName,t_trains.createTime FROM t_way ,t_trains
+        <where>
+            t_trains.traId = t_way.traId
+            <if test="traName != null and traName != ''">
+                and traName=#{traName}
+            </if>
+        </where>
+        ) as a group by a.traId,a.traName,a.createTime
+        order by a.createTime desc limit #{pageRow},9
+    </select>
+    <resultMap id="trainWithWay" type="com.hrbu.domain.Train">
+        <id property="traId" column="traId"/>
+        <result property="traName" column="traName"/>
+        <result property="createTime" column="createTime"/>
+        <collection property="way" ofType="com.hrbu.domain.Way" >
+            <id property="wayId" column="wayId"/>
+        </collection>
+    </resultMap>
+
+    <!--创建线路时 选择列车 createWay=0-->
+    <select id="selectTrain" resultType="com.hrbu.domain.Train">
+        select traId,traName from t_trains where createWay = '0'
+    </select>
+
+    <select id="selectStation" resultType="com.hrbu.domain.Station">
+        select stationId, stationName from t_station
+    </select>
+
+    <insert id="insertWay" parameterType="java.util.HashMap">
+        insert into t_way (stationId,traId,i,inTime,outTime) values
+        <foreach collection="wayList" item="item" index="index" separator=",">
+            <if test="item.stationId != null">
+              (#{item.stationId},#{traId},#{item.way.i},#{item.way.inTime},#{item.way.outTime})
+            </if>
+        </foreach>
+    </insert>
+    <!--创建线路之后 将Train 是否创建线路的标志位 值1  默认0-->
+    <update id="updateCreateWay" parameterType="java.util.HashMap">
+        update  t_trains SET createWay = #{createWay} WHERE traId = #{traId}
+    </update>
+    <!--删除线路之后 将Train 是否创建线路的标志位 值0  默认0-->
+    <update id="updateCreateWayDel" parameterType="java.util.HashMap">
+        update  t_trains SET createWay = #{createWay} WHERE traId = #{traId}
+    </update>
+
+    <select id="selectStationById" parameterType="java.util.HashMap" resultMap="waySataionTrain">
+        select t_station.stationName,coordinate_l, coordinate_r ,city,i,inTime,outTime from t_station,t_trains,t_way where t_station.stationId = t_way.stationId and t_way.traId = t_trains.traId
+        and t_way.traId = #{traId}
+        GROUP BY t_station.stationName order by i asc
+    </select>
+    <resultMap id="waySataionTrain" type="com.hrbu.domain.Station">
+        <result property="stationName" column="stationName"/>
+        <result property="city" column="city"/>
+        <result property="coordinate_l" column="coordinate_l"/>
+        <result property="coordinate_r" column="coordinate_r"/>
+        <association property="way" javaType="com.hrbu.domain.Way">
+            <result property="i" column="i"/>
+            <result property="inTime" column="inTime"/>
+            <result property="outTime" column="outTime"/>
+        </association>
+    </resultMap>
+
+    <delete id="deleteWay" parameterType="java.lang.String">
+        delete FROM t_way WHERE traId = #{traId}
+    </delete>
+
+</mapper>

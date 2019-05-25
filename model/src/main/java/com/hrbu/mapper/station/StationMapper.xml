@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.station.StationMapper">
+
+    <!--查数据的总条数   param参数 用于根据条件查询出的结果的总条数 分页bug-->
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        select count(stationId) from t_station
+        <where>
+            <if test="stationName != null and stationName != ''">
+                and stationName=#{stationName}
+            </if>
+        </where>
+    </select>
+
+    <!--查询数据 参数用于条件查询 -->
+    <select id="findStationList" parameterType="java.util.HashMap" resultType="com.hrbu.domain.Station">
+        SELECT stationId,stationName,coordinate_l,coordinate_r,city ,province FROM t_station
+        <where>
+            <if test="stationName != null and stationName != ''">
+                and stationName=#{stationName}
+            </if>
+        </where>
+        order by  coordinate_l desc, coordinate_r desc
+        limit #{pageRow},9
+    </select>
+
+    <select id="selectStationById" parameterType="String" resultType="com.hrbu.domain.Station">
+        select stationId, stationName,coordinate_l,coordinate_r,city,province from t_station where stationId = #{stationId}
+    </select>
+
+    <insert id="saveStation" parameterType="java.util.HashMap">
+        INSERT INTO t_station (stationId,stationName,coordinate_l,coordinate_r,city,province)VALUES(#{stationId},#{stationName},#{coordinate_l},#{coordinate_r},#{city},#{province})
+    </insert>
+
+    <delete id="deleteStation" parameterType="String">
+       DELETE FROM t_station WHERE stationId = #{stationId}
+    </delete>
+    <delete id="deleteStationWay" parameterType="String">
+        delete from t_way where stationId = #{stationId}
+    </delete>
+
+    <update id="updateStation" parameterType="java.util.HashMap">
+        UPDATE t_station SET stationName = #{stationName} ,coordinate_l = #{coordinate_l} ,coordinate_r = #{coordinate_r} ,city = #{city} ,province = #{province} WHERE stationId = #{stationId}
+    </update>
+
+
+</mapper>

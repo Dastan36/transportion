@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.complaint.ComplaintMapper">
+
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        select count(1) from t_complaint
+        <where>
+            <if test="userId != null and userId != ''">
+                and userId = #{userId}
+            </if>
+
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>
+    </select>
+
+    <!--客户看的-->
+    <select id="selectComplaint" parameterType="java.util.HashMap" resultMap="complaintWithOrder">
+        select  complaintId,t_order.orderId,complaintType, complaintName, complaintPhone, complaintDescribe,t_complaint.status,t_complaint.createTime
+        from t_complaint,t_order
+        <where>
+            t_order.orderId = t_complaint.orderId
+            <if test="userId != null and userId != ''">
+                and t_complaint.userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and t_order.orderId=#{orderId}
+            </if>
+        </where>
+        order by t_complaint.createTime desc ,t_order.orderId desc limit #{pageRow},9
+    </select>
+    <resultMap id="complaintWithOrder" type="com.hrbu.domain.Order">
+        <id property="orderId" column="orderId"/>
+        <collection property="complaint" ofType="com.hrbu.domain.Complaint">
+            <id column="complaintId" property="complaintId"/>
+            <result property="complaintType" column="complaintType"/>
+            <result property="complaintName" column="complaintName"/>
+            <result property="complaintPhone" column="complaintPhone"/>
+            <result property="complaintDescribe" column="complaintDescribe"/>
+            <result property="status" column="status"/>
+            <result property="createTime" column="createTime"/>
+        </collection>
+    </resultMap>
+
+    <delete id="cancelComplaint" parameterType="java.lang.String" >
+        delete from t_complaint where complaintId = #{complaintId}
+    </delete>
+
+    <!--客户投诉-->
+    <insert id="insertComplaint" parameterType="java.util.HashMap">
+        insert into t_complaint (complaintId,orderId,userId,complaintType,complaintName,complaintPhone,complaintDescribe,createTime)
+        values (#{complaintId},#{orderId},#{userId},#{complaintType},#{complaintName},#{complaintPhone},#{complaintDescribe},#{createTime})
+    </insert>
+
+
+    <!--客户 投诉详细-->
+    <select id="selectDetails" parameterType="java.lang.String" resultMap="complaintWithOrder">
+        select complaintId,t_order.orderId,complaintType, complaintName, complaintPhone, complaintDescribe,t_complaint.status,t_complaint.createTime
+        from t_complaint,t_order where t_order.orderId = t_complaint.orderId and complaintId = #{complaintId}
+    </select>
+
+
+    <update id="updateComplaint" parameterType="java.util.HashMap">
+        update t_complaint set status = #{status} where complaintId = #{complaintId}
+    </update>
+
+    <!--验证订单号-->
+    <select id="complaintVerifyOrderId" parameterType="java.lang.String" resultType="com.hrbu.domain.Order">
+        select * from t_order where orderId = #{orderId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.line.LineMapper">
+
+    <select id="selectTrain" resultType="com.hrbu.domain.Train">
+        select traId,traName from t_trains
+    </select>
+
+    <select id="selectStationById" parameterType="java.lang.String" resultMap="waySataionTrain">
+        select t_station.stationName,coordinate_l, coordinate_r ,city,i,inTime,outTime from t_station,t_trains,t_way where t_station.stationId = t_way.stationId and t_way.traId = t_trains.traId
+        <if test="_parameter != null and _parameter != ''">
+        and t_way.traId = #{_parameter}
+        </if>
+    </select>
+    <resultMap id="waySataionTrain" type="com.hrbu.domain.Station">
+        <result property="stationName" column="stationName"/>
+        <result property="city" column="city"/>
+        <result property="coordinate_l" column="coordinate_l"/>
+        <result property="coordinate_r" column="coordinate_r"/>
+        <association property="way" javaType="com.hrbu.domain.Way">
+            <result property="i" column="i"/>
+            <result property="inTime" column="inTime"/>
+            <result property="outTime" column="outTime"/>
+        </association>
+    </resultMap>
+
+    <select id="selectTrainByStation" parameterType="java.lang.String" resultMap="TrainWaySataion">
+      SELECT t_way.traId FROM t_way,t_trains, t_station WHERE t_station.stationId = t_way.stationId
+	  AND t_way.traId = t_trains.traId
+        <if test="_parameter != null and _parameter != ''">
+	      AND t_station.stationName=#{_parameter}
+        </if>
+    </select>
+    <resultMap id="TrainWaySataion" type="com.hrbu.domain.Train">
+        <id column="traId" property="traId"></id>
+        <association property="way" javaType="com.hrbu.domain.Way">
+        </association>
+    </resultMap>
+
+    <select id="seleceTrainById" parameterType="java.lang.String" resultType="com.hrbu.domain.Train">
+        select traId, traName from t_trains where traId = #{traId}
+    </select>
+
+    <select id="selectStationByName" parameterType="java.lang.String" resultType="com.hrbu.domain.Station">
+        select stationId,stationName,coordinate_l, coordinate_r from t_station where stationName=#{stationName}
+    </select>
+
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.user.UserMapper">
+    <!--查数据的总条数   param参数 用于根据条件查询出的结果的总条数 分页bug-->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+      select count(1) from t_user
+        <where>
+            <if test="userName != null and userName != ''">
+                and userName=#{userName}
+            </if>
+
+            <if test="telephone != null and telephone != ''">
+                and telephone=#{telephone}
+            </if>
+        </where>
+    </select>
+
+    <!--查询数据 参数用于条件查询 按时间降序-->
+    <select id="findUserList" parameterType="java.util.Map" resultType="com.hrbu.domain.User">
+        SELECT * FROM t_user
+        <where>
+            <if test="userName != null and userName != ''">
+                and userName=#{userName}
+            </if>
+
+            <if test="telephone != null and telephone != ''">
+                and telephone=#{telephone}
+            </if>
+        </where>
+        order by createTime desc limit #{pageRow},9
+    </select>
+
+    <select id="findUserById" parameterType="java.lang.String" resultType="com.hrbu.domain.User">
+        SELECT * FROM t_user where userId = #{userId}
+    </select>
+
+    <insert id="saveUser" parameterType="com.hrbu.domain.User">
+      insert into t_user (userId,userName,password,telephone,createTime,status ) VALUES(#{userId},#{userName},#{password},#{telephone},#{createTime},#{status})
+    </insert>
+
+    <delete id="deleteUser" parameterType="java.lang.String">
+        delete from t_user where userId = #{userId}
+    </delete>
+
+    <update id="updateUser" parameterType="com.hrbu.domain.User">
+        UPDATE t_user SET userName = #{userName},telephone = #{telephone} WHERE userId = #{userId}
+    </update>
+
+    <select id="userLogin" parameterType="com.hrbu.domain.User" resultType="com.hrbu.domain.User">
+        select * from t_user where telephone = #{telephone} and password = #{password}
+    </select>
+
+    <!--客户修改密码-->
+    <update id="updatePassword" parameterType="java.lang.String">
+        update t_user set password = #{password} where userId = #{userId}
+    </update>
+
+    <select id="verifyPhone" parameterType="java.lang.String" resultType="com.hrbu.domain.User">
+        select * from t_user where userId = #{userId}
+    </select>
+
+    
+
+</mapper>

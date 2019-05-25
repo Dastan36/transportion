@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.order.OrderMapper">
+
+    <!--订单 二级联动-->
+    <select id="selectCity" resultType="com.hrbu.domain.Station">
+        select city from t_station group by city
+    </select>
+
+    <select id="selectStation" parameterType="java.lang.String" resultType="com.hrbu.domain.Station">
+        select stationName from t_station where  city=#{city}
+    </select>
+    
+    <select id="selectCoordinate" parameterType="java.util.ArrayList" resultType="com.hrbu.domain.Station">
+        select coordinate_l ,coordinate_r from t_station where stationName in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+    </select>
+
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        select count(1) from t_order
+        <where>
+            isDelete = 1
+            <if test="userId != null and userId != ''">
+                and userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>
+    </select>
+
+    <!--客户看的-->
+    <select id="selectOrder" parameterType="java.util.HashMap" resultType="com.hrbu.domain.Order">
+        select * from t_order
+        <where>
+            isDelete = 1
+            <if test="userId != null and userId != ''">
+                and userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>
+        order by createTime desc limit #{pageRow},9
+    </select>
+<!--管理员查看的order列表-->
+    <select id="managerSelectOrder" parameterType="java.util.HashMap" resultType="com.hrbu.domain.Order">
+        select * from t_order
+        <where>
+            isDelete = 1
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>order by createTime desc limit #{pageRow},9
+    </select>
+
+    <insert id="insertOrder" parameterType="java.util.HashMap">
+        INSERT INTO t_order (orderId,userId,senderName,senderPhone,senderStation,receiptName,receiptPhone,receiptStation,goodsName,goodsWeight,goodsVolume,money,moneyStatus,transTime,createTime,status)
+        VALUES (#{orderId},#{userId},#{senderName},#{senderPhone},#{senderStation},#{receiptName},#{receiptPhone},#{receiptStation},#{goodsName},#{goodsWeight},#{goodsVolume},#{money},#{moneyStatus},#{transTime},#{createTime},#{status})
+    </insert>
+
+    <select id="selectById" parameterType="java.lang.String" resultType="com.hrbu.domain.Order">
+        select * from t_order where orderId = #{orderId} and isDelete = 1
+    </select>
+
+    <!--管理员 更新状态 线路匹配-->
+    <update id="updateOrder" parameterType="java.util.HashMap" >
+        update t_order set status = #{status} , lineMatch = #{lineMatch} where orderId = #{orderId}
+    </update>
+
+    <!--在线支付 更改订单状态 -->
+    <update id="updateOrderMoneyStatus" parameterType="java.lang.String">
+        update t_order set moneyStatus = '在线支付(已支付)' where orderId = #{orderId}
+    </update>
+
+    <!--运输状态已完成 直接改变领货状态为待收货 -->
+    <update id="updateGetStatus" parameterType="java.util.HashMap">
+        update t_order set getStatus = #{getStatus}
+        <if test="arriveTime != null and arriveTime != ''">
+            ,arriveTime = #{arriveTime}
+        </if>
+        <if test="getTime != null and getTime != ''">
+            , getTime = #{getTime}
+        </if>
+         where orderId = #{orderId}
+    </update>
+
+
+    <!--取消订单-->
+    <delete id="cancelOrder" parameterType="java.lang.String" >
+        delete from t_order where orderId = #{orderId}
+    </delete>
+
+    <!--删除 控制显示-->
+    <update id="deleteOrder" parameterType="java.lang.String">
+        update t_order set isDelete = 0 where orderId = #{orderId}
+    </update>
+
+</mapper>

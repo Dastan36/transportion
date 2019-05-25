@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.getGoods.GetGoodsMapper">
+    <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
+        select count(1) from t_order
+        <where>
+            isDelete = 1 and getStatus IN( '待领货', '已领货')
+            <if test="userId != null and userId != ''">
+               and userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>
+    </select>
+
+    <!--客户看的-->
+    <select id="selectOrder" parameterType="java.util.HashMap" resultType="com.hrbu.domain.Order">
+        select * from t_order
+        <where>
+            isDelete = 1 and getStatus IN( '待领货', '已领货')
+            <if test="userId != null and userId != ''">
+                and userId = #{userId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and orderId=#{orderId}
+            </if>
+        </where>
+        order by createTime desc limit #{pageRow},9
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.admin.AdminMapper">
+
+    <select id="findAdminList" resultType="com.hrbu.domain.Admin">
+        SELECT * FROM t_admin
+    </select>
+
+    <select id="AdminLogin" parameterType="com.hrbu.domain.Admin" resultType="com.hrbu.domain.Admin">
+        SELECT * FROM t_admin where adminName = #{adminName} and password = #{password}
+    </select>
+
+</mapper>
