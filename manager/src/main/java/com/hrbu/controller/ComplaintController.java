@@ -1,6 +1,7 @@
 package com.hrbu.controller;
 
 import com.hrbu.domain.Order;
+import com.hrbu.domain.Province;
 import com.hrbu.service.complaint.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,9 +30,11 @@ public class ComplaintController {
         }
 
         Object userId = session.getAttribute("userId");
+        List<Province> provinces = (List<Province>) session.getAttribute("provinces");
         Map map = new HashMap();
         map.put("pageNum",pageNum);
         map.put("orderId",orderId);
+        map.put("provinces",provinces);
         List complaintList = complaintService.selectComplaint(map);
         int pageCount = complaintService.selectCount(map);//总条数
         pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条

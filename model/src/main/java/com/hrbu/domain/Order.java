@@ -8,9 +8,11 @@ public class Order {
     private String orderId;
     private String senderName;
     private String senderPhone;
+    private String senderProvince;
     private String senderStation;
     private String receiptName;
     private String receiptPhone;
+    private String receiptProvince;
     private String receiptStation;
     private String goodsName;
     private Double goodsWeight;
@@ -33,13 +35,15 @@ public class Order {
     public Order() {
     }
 
-    public Order(String orderId, String senderName, String senderPhone, String senderStation, String receiptName, String receiptPhone, String receiptStation, String goodsName, Double goodsWeight, Double goodsVolume, Date createTime, Date transTime, String currentCoordinate_l, String currentCoordinate_r, String money, String moneyStatus, String lineMatch, String status, String getStatus, int isDelete, Date arriveTime, Date getTime, List<Complaint> complaint, List<Compensate> compensate) {
+    public Order(String orderId, String senderName, String senderPhone, String senderProvince, String senderStation, String receiptName, String receiptPhone, String receiptProvince, String receiptStation, String goodsName, Double goodsWeight, Double goodsVolume, Date createTime, Date transTime, String currentCoordinate_l, String currentCoordinate_r, String money, String moneyStatus, String lineMatch, String status, String getStatus, int isDelete, Date arriveTime, Date getTime, List<Complaint> complaint, List<Compensate> compensate) {
         this.orderId = orderId;
         this.senderName = senderName;
         this.senderPhone = senderPhone;
+        this.senderProvince = senderProvince;
         this.senderStation = senderStation;
         this.receiptName = receiptName;
         this.receiptPhone = receiptPhone;
+        this.receiptProvince = receiptProvince;
         this.receiptStation = receiptStation;
         this.goodsName = goodsName;
         this.goodsWeight = goodsWeight;
@@ -250,5 +254,21 @@ public class Order {
 
     public void setCompensate(List<Compensate> compensate) {
         this.compensate = compensate;
+    }
+
+    public String getSenderProvince() {
+        return senderProvince;
+    }
+
+    public void setSenderProvince(String senderProvince) {
+        this.senderProvince = senderProvince;
+    }
+
+    public String getReceiptProvince() {
+        return receiptProvince;
+    }
+
+    public void setReceiptProvince(String receiptProvince) {
+        this.receiptProvince = receiptProvince;
     }
 }

@@ -10,6 +10,20 @@
         select count(1) from t_order
         <where>
             isDelete = 1 and getStatus IN( '待领货', '已领货')
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                    senderProvince in
+                    <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                        #{item.province}
+                    </foreach>
+                    or
+                    receiptProvince in
+                    <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                        #{item.province}
+                    </foreach>
+                )
+            </if>
             <if test="userId != null and userId != ''">
                and userId = #{userId}
             </if>
@@ -24,6 +38,20 @@
         select * from t_order
         <where>
             isDelete = 1 and getStatus IN( '待领货', '已领货')
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                senderProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                or
+                receiptProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                )
+            </if>
             <if test="userId != null and userId != ''">
                 and userId = #{userId}
             </if>

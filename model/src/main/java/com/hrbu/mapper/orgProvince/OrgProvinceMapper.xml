@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.orgProvince.OrgProvinceMapper">
+    
+    <select id="selectProvinceByOrgId" parameterType="java.lang.String" resultMap="orgPro">
+        select province from t_organize_province where orgId = #{orgId}
+    </select>
+    <resultMap id="orgPro" type="com.hrbu.domain.Organize">
+        <id property="orgId" column="orgId"></id>
+        <collection property="province" ofType="com.hrbu.domain.Province">
+            <result property="province" column="province"></result>
+        </collection>
+    </resultMap>
+</mapper>
+

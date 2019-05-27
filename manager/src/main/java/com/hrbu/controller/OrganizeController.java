@@ -42,12 +42,15 @@ public class OrganizeController {
         return "organize/org_add";
     }
 
+    @ResponseBody
     @RequestMapping("saveorg")
-    public String saveOrg(Organize organize) throws Exception {
+    public boolean saveOrg(Organize organize) throws Exception {
         organize.setOrgId(UUID.randomUUID().toString());
         organize.setCreateTime(new Date());
-        organizeService.saveOrg(organize);
-        return "redirect:/organize/orglist";
+        boolean flag = false;
+        flag = organizeService.saveOrg(organize);
+
+        return flag;
     }
 
 

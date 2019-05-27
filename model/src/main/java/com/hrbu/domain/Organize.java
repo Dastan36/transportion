@@ -16,15 +16,17 @@ public class Organize {
     private Date createTime;
 
     private List<Train> train;
+    private List<Province> province;
 
     public Organize() {
     }
 
-    public Organize(String orgId, String orgName, Date createTime, List<Train> train) {
+    public Organize(String orgId, String orgName, Date createTime, List<Train> train, List<Province> province) {
         this.orgId = orgId;
         this.orgName = orgName;
         this.createTime = createTime;
         this.train = train;
+        this.province = province;
     }
 
     public String getOrgId() {
@@ -57,5 +59,13 @@ public class Organize {
 
     public void setTrain(List<Train> train) {
         this.train = train;
+    }
+
+    public List<Province> getProvince() {
+        return province;
+    }
+
+    public void setProvince(List<Province> province) {
+        this.province = province;
     }
 }

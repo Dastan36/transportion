@@ -12,11 +12,12 @@ public interface OrganizeMapper {
 
     Organize findOrgById(String orgId) throws Exception;
 
-    void saveOrg(Organize organize) throws Exception;
+    int saveOrg(Organize organize) throws Exception;
 
     void deleteOrg(String orgId) throws Exception;
 
     void updateOrg(Organize organize) throws Exception;
 
+    String selectIdByAdminName(String orgName) throws Exception;
 
 }

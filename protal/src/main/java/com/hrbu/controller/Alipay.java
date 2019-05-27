@@ -40,9 +40,11 @@ public class Alipay {
         map.put("userId",session.getAttribute("userId"));
         map.put("senderName",order.getSenderName());
         map.put("senderPhone",order.getSenderPhone());
+        map.put("senderProvince",order.getSenderProvince());
         map.put("senderStation",order.getSenderStation());
         map.put("receiptName",order.getReceiptName());
         map.put("receiptPhone",order.getReceiptPhone());
+        map.put("receiptProvince",order.getReceiptProvince());
         map.put("receiptStation",order.getReceiptStation());
         map.put("goodsName",order.getGoodsName());
         map.put("goodsWeight",order.getGoodsWeight());

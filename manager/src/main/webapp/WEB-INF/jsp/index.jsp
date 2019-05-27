@@ -65,7 +65,7 @@
     <div class="layui-body">
         <!-- 内容主体区域 -->
         <div style="padding: 15px;height: 100%">
-            <iframe id="option" name="content" style="overflow: hidden;" scrolling="yes" frameborder="no" width="100%"
+            <iframe id="option" name="content" style="overflow: hidden;" scrolling="no" frameborder="no" width="100%"
                     height="100%">
             </iframe>
         </div>

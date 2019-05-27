@@ -16,9 +16,14 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
 
     @Override
-    public List<Station> selectCity()  throws Exception{
+    public List<Station> selectProvince() throws Exception {
+        return orderMapper.selectProvince();
+    }
 
-        return orderMapper.selectCity();
+    @Override
+    public List<Station> selectCity(String province)  throws Exception{
+
+        return orderMapper.selectCity(province);
     }
 
     @Override

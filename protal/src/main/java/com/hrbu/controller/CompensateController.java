@@ -2,6 +2,7 @@ package com.hrbu.controller;
 
 import com.hrbu.domain.Complaint;
 import com.hrbu.domain.Order;
+import com.hrbu.domain.Province;
 import com.hrbu.service.compensate.CompensateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,10 +29,12 @@ public class CompensateController {
         }
 
         Object userId = session.getAttribute("userId");
+
         Map map = new HashMap();
         map.put("pageNum",pageNum);
         map.put("userId",userId);
         map.put("orderId",orderId);
+
         List compensateList = compensateService.selectCompensate(map);
         int pageCount = compensateService.selectCount(map);//总条数
         pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条

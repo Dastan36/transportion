@@ -1,7 +1,11 @@
 package com.hrbu.controller;
 
 import com.hrbu.domain.Admin;
+import com.hrbu.domain.Organize;
+import com.hrbu.domain.Province;
 import com.hrbu.service.admin.AdminServiceImpl;
+import com.hrbu.service.orgProvince.OrgProvinceService;
+import com.hrbu.service.organized.OrganizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.hrbu.sysfranework.validateCode.ValidateCode.RANDOMCODEKEY;
@@ -18,7 +23,10 @@ public class LoginController {
 
     @Autowired
     private AdminServiceImpl adminService;
-
+    @Autowired
+    private OrganizeService organizeService;
+    @Autowired
+    private OrgProvinceService orgProvinceService;
 
     @RequestMapping(value = {"/tologin"})  //
     public String toLogin(){
@@ -43,8 +51,15 @@ public class LoginController {
         if(randomCode.equalsIgnoreCase(validatecode)){
             if(admin != null){
                 session.setAttribute("login",true);
-                session.setAttribute("adminName",admin.getAdminName());
-
+                String adminName = admin.getAdminName();
+                session.setAttribute("adminName",adminName);//adminName 和机构名一样
+                String orgId = organizeService.selectIdByAdminName(adminName);//找到orgId
+                //通过orgId 机构 找到每个铁路局管辖的省市自治区
+                if (orgId != null) {//国家的没有orgId
+                    List<Organize> organizes = orgProvinceService.selectProvinceByOrgId(orgId);
+                    List<Province> provinces = organizes.get(0).getProvince();
+                    session.setAttribute("provinces", provinces);
+                }
                 return "redirect:/index";  //验证成功跳转到toIndex
             }else{
                 session.setAttribute("msg","用户名或密码错误");

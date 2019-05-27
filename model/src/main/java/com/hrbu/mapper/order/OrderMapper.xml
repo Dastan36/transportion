@@ -7,9 +7,13 @@
      -->
 <mapper namespace="com.hrbu.mapper.order.OrderMapper">
 
-    <!--订单 二级联动-->
-    <select id="selectCity" resultType="com.hrbu.domain.Station">
-        select city from t_station group by city
+    <!--订单 三级联动-->
+    <select id="selectProvince" resultType="com.hrbu.domain.Station">
+        select province from t_station group by province
+    </select>
+
+    <select id="selectCity" parameterType="java.lang.String" resultType="com.hrbu.domain.Station">
+        select distinct city from t_station where province  = #{province}
     </select>
 
     <select id="selectStation" parameterType="java.lang.String" resultType="com.hrbu.domain.Station">
@@ -27,6 +31,21 @@
         select count(1) from t_order
         <where>
             isDelete = 1
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                senderProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                or
+                receiptProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                )
+            </if>
+
             <if test="userId != null and userId != ''">
                 and userId = #{userId}
             </if>
@@ -41,6 +60,20 @@
         select * from t_order
         <where>
             isDelete = 1
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                senderProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                or
+                receiptProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                )
+            </if>
             <if test="userId != null and userId != ''">
                 and userId = #{userId}
             </if>
@@ -55,6 +88,22 @@
         select * from t_order
         <where>
             isDelete = 1
+
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                senderProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                or
+                receiptProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                )
+            </if>
+
             <if test="orderId != null and orderId != ''">
                 and orderId=#{orderId}
             </if>
@@ -62,8 +111,8 @@
     </select>
 
     <insert id="insertOrder" parameterType="java.util.HashMap">
-        INSERT INTO t_order (orderId,userId,senderName,senderPhone,senderStation,receiptName,receiptPhone,receiptStation,goodsName,goodsWeight,goodsVolume,money,moneyStatus,transTime,createTime,status)
-        VALUES (#{orderId},#{userId},#{senderName},#{senderPhone},#{senderStation},#{receiptName},#{receiptPhone},#{receiptStation},#{goodsName},#{goodsWeight},#{goodsVolume},#{money},#{moneyStatus},#{transTime},#{createTime},#{status})
+        INSERT INTO t_order (orderId,userId,senderName,senderPhone,senderProvince,senderStation,receiptName,receiptPhone,receiptProvince,receiptStation,goodsName,goodsWeight,goodsVolume,money,moneyStatus,transTime,createTime,status)
+        VALUES (#{orderId},#{userId},#{senderName},#{senderPhone},#{senderProvince},#{senderStation},#{receiptName},#{receiptPhone},#{receiptProvince},#{receiptStation},#{goodsName},#{goodsWeight},#{goodsVolume},#{money},#{moneyStatus},#{transTime},#{createTime},#{status})
     </insert>
 
     <select id="selectById" parameterType="java.lang.String" resultType="com.hrbu.domain.Order">

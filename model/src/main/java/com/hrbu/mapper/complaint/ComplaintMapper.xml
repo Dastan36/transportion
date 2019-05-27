@@ -8,8 +8,23 @@
 <mapper namespace="com.hrbu.mapper.complaint.ComplaintMapper">
 
     <select id="selectCount"  parameterType="java.util.HashMap" resultType="int">
-        select count(1) from t_complaint
+        select count(1) from t_complaint ,t_order
         <where>
+            t_complaint.orderId = t_order.orderId
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                senderProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                or
+                receiptProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                )
+            </if>
             <if test="userId != null and userId != ''">
                 and userId = #{userId}
             </if>
@@ -26,6 +41,20 @@
         from t_complaint,t_order
         <where>
             t_order.orderId = t_complaint.orderId
+            <if test="provinces != null and provinces.size > 0">
+                and
+                (
+                senderProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                or
+                receiptProvince in
+                <foreach item="item" collection="provinces" open="(" separator="," close=")">
+                    #{item.province}
+                </foreach>
+                )
+            </if>
             <if test="userId != null and userId != ''">
                 and t_complaint.userId = #{userId}
             </if>

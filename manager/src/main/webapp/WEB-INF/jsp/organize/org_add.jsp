@@ -18,26 +18,63 @@
     <base href="<%=basePath%>">
     <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/modules/layui.css">
     <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
+    <script src="Binary/js/jquery1.9.1.js"></script>
 </head>
 <body>
-<form class="layui-form" action="organize/saveorg">
+<br>
+<form class="layui-form" action="">
     <div class="layui-form-item">
         <label class="layui-form-label">机构名：</label>
         <div class="layui-input-inline">
-            <input type="text" name="orgName" placeholder="请输入" autocomplete="off" class="layui-input" >
+            <input id="orgName" type="text" name="orgName" placeholder="请输入" autocomplete="off" required lay-verify="required"
+                   class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <div class="layui-input-block" hidden>
+            <button class="layui-btn createBtn" lay-submit lay-filter="formDemo">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
 
 </form>
 </table>
+<script>
+    $(function () {
 
-
+        $('.createBtn').click(function () {
+            var orgName = $('#orgName').val();
+            //console.log(orgName);
+            $.ajax('organize/saveorg',{
+                type:'POST',
+                data:{'orgName':orgName},
+                dataType:'json',
+                async:false,//默认为true异步
+                success:function (data) {
+                    console.log(data);
+                    if (data) {
+                        layui.use( 'layer', function () {
+                            var layer = layui.layer;
+                            layer.open({
+                                type: 1
+                                ,offset: 'c'
+                                ,content: '理赔申请成功'
+                                ,btn: '确定'
+                                ,btnAlign: 'c' //按钮居中
+                                ,shade: 0.2 //显示遮罩率
+                                ,yes: function(){
+                                    var index=parent.layer.getFrameIndex(window.name); //父级子级弹窗一起关闭
+                                    parent.layer.close(index);
+                                    parent.location.reload();
+                                }
+                            });
+                        })
+                    }
+                }
+            })
+        })
+    })
+</script>
 </body>
 </html>

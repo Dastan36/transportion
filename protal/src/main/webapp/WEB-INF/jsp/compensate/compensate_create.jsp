@@ -99,7 +99,7 @@
                                     }else{
                                         var compensateName = $('#compensateName').val();
                                         var compensateMoney = $('#compensateMoney').val();
-                                        $.ajax('compensate/create',{
+                                        $.ajax('compensate/create',{    //在验证中 进行ajax提交
                                             type:'POST',
                                             data:{'orderId':value,'compensateName':compensateName,'compensateMoney':compensateMoney},
                                             dataType:'json',
@@ -120,7 +120,6 @@
                                                             parent.location.reload();
                                                         }
                                                     });
-
                                                 }
                                             }
                                         })

@@ -33,9 +33,10 @@ public class OrganizeServiceImpl implements OrganizeService {
     }
 
     @Override
-    public void saveOrg(Organize organize) throws Exception{
+    public boolean saveOrg(Organize organize) throws Exception{
 
-        organizeMapper.saveOrg(organize);
+        int count = organizeMapper.saveOrg(organize);
+        return count>0;
     }
 
     @Override
@@ -55,5 +56,10 @@ public class OrganizeServiceImpl implements OrganizeService {
     public void updateOrg(Organize organize) throws Exception{
 
         organizeMapper.updateOrg(organize);
+    }
+
+    @Override
+    public String selectIdByAdminName(String orgName) throws Exception {
+        return organizeMapper.selectIdByAdminName(orgName);
     }
 }

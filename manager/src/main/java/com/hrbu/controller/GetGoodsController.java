@@ -1,5 +1,6 @@
 package com.hrbu.controller;
 
+import com.hrbu.domain.Province;
 import com.hrbu.service.getGoods.GetGoodsService;
 import com.hrbu.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,12 @@ public class GetGoodsController {
         }
 
         Object userId = session.getAttribute("userId");
+        List<Province> provinces = (List<Province>) session.getAttribute("provinces");
         Map map = new HashMap();
         map.put("pageNum",pageNum);
         map.put("userId",userId);
         map.put("orderId",orderId);
+        map.put("provinces",provinces);
         List orderList = getStatusService.selectOrder(map);
         int pageCount = getStatusService.selectCount(map);//总条数
         pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条

@@ -74,8 +74,14 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">寄货地址</label>
                 <div class="layui-input-inline">
-                    <select name="city" required lay-verify="required" lay-filter="city1">
-                        <option value="">请选择城市</option>
+                    <select name="senderProvince" required lay-verify="required" lay-filter="province1">
+                        <option value="">请选择省，直辖市，自治区</option>
+                        <c:forEach items="${provinceList}" var="province" varStatus="status">
+                            <option value="${province.province}">${province.province}</option>
+                        </c:forEach>
+                    </select>
+                    <select id="city1" name="city" required lay-verify="required" lay-filter="city1">
+                        <option value="">请选择市，县</option>
                         <c:forEach items="${cityList}" var="city" varStatus="status">
                             <option value="${city.city}" name="city">${city.city}</option>
                         </c:forEach>
@@ -87,8 +93,14 @@
                 </div>
                 <label class="layui-form-label">收货地址</label>
                 <div class="layui-input-inline">
-                    <select name="city2" required lay-verify="reqired" lay-filter="city2">
-                        <option value="">请选择城市</option>
+                    <select name="receiptProvince" required lay-verify="required" lay-filter="province2">
+                        <option value="">请选择省，直辖市，自治区</option>
+                        <c:forEach items="${provinceList}" var="province" varStatus="status">
+                            <option value="${province.province}">${province.province}</option>
+                        </c:forEach>
+                    </select>
+                    <select id="city2" name="city2" required lay-verify="reqired" lay-filter="city2">
+                        <option value="">请选择市，县</option>
                         <c:forEach items="${cityList}" var="city" varStatus="status">
                             <option value="${city.city}" name="city">${city.city}</option>
                         </c:forEach>
@@ -141,7 +153,7 @@
             <div class="layui-form-item">
                 <div class="layui-input-block" style="float: right">
                     <%--class 中的是控制禁用样式  另一个是控制点击禁用事件--%>
-                    <button class="layui-btn <c:if test="${userName eq null}">layui-btn-disabled</c:if>" lay-submit lay-filter="formDemo" <c:if test="${userName eq null}"> disabled </c:if> >马上下单</button>
+                    <button class="layui-btn <c:if test="${user.userName eq null}">layui-btn-disabled</c:if>" lay-submit lay-filter="formDemo" <c:if test="${user.userName eq null}"> disabled </c:if> >马上下单</button>
                 </div>
             </div>
         </form>
@@ -175,6 +187,26 @@
                     //表单
                     var form = layui.form;
                     form.render();
+                    //三级联动省份1
+                    form.on('select(province1)', function (data) {
+                        province1 = data.value;
+                        //alert(data.value);
+                        $("#city1").find("option").remove();
+                        provinceOption1(province1);
+                        form.render();
+
+                    });
+                    //三级联动省份2
+                    form.on('select(province2)', function (data) {
+                        province2 = data.value;
+                        //alert(data.value);
+                        $("#city2").find("option").remove();
+                        provinceOption2(province2);
+                        form.render();
+
+                    });
+
+
                     //二级联动城市1
                     form.on('select(city1)', function (data) {
                         city1 = data.value;
@@ -228,6 +260,56 @@
 
                     });
                 })
+
+                function provinceOption1(province) {
+                    //alert(city);
+                    $.ajax('order/provincecity', {
+                        type: 'post',                         //提交方法
+                        data: {'province': province},                //提交的参数
+                        dataType: 'json',                     //接受到信息如何处理
+                        success: function (data) {
+                            var cityList = eval(data.cityList);
+                            $("#city1").find("option").remove();
+                            //alert(cityList.length);
+                            for (var i = 0; i < cityList.length; i++) {
+                                // var option = document.createElement("option");
+                                //alert(stationList[i].stationName);
+                                // $(option).attr("value",stationList[i].staitonName);
+                                // $(option).attr("text",stationList[i].staitonName);staitonName
+                                $('#city1').append("<option value='请选择'></option><option value='" + cityList[i].city + "' name='senderStatioin'>" + cityList[i].city + "</option>");
+                            }
+                            layui.use('form', function () {
+                                var form = layui.form;
+                                form.render();
+                            });
+                        }
+                    })
+                }
+
+                function provinceOption2(province) {
+                    //alert(city);
+                    $.ajax('order/provincecity', {
+                        type: 'post',                         //提交方法
+                        data: {'province': province},                //提交的参数
+                        dataType: 'json',                     //接受到信息如何处理
+                        success: function (data) {
+                            var cityList = eval(data.cityList);
+                            $("#city2").find("option").remove();
+                            //alert(cityList.length);
+                            for (var i = 0; i < cityList.length; i++) {
+                                // var option = document.createElement("option");
+                                //alert(stationList[i].stationName);
+                                // $(option).attr("value",stationList[i].staitonName);
+                                // $(option).attr("text",stationList[i].staitonName);staitonName
+                                $('#city2').append("<option value='请选择'></option><option value='" + cityList[i].city + "' name='senderStatioin'>" + cityList[i].city + "</option>");
+                            }
+                            layui.use('form', function () {
+                                var form = layui.form;
+                                form.render();
+                            });
+                        }
+                    })
+                }
 
 
                 function option1(city) {

@@ -33,5 +33,8 @@
         UPDATE t_organize SET orgName = #{orgName} WHERE orgId = #{orgId}
     </update>
 
+    <select id="selectIdByAdminName" parameterType="java.lang.String" resultType="java.lang.String">
+        select orgId from t_organize where orgName = #{orgName}
+    </select>
 
 </mapper>

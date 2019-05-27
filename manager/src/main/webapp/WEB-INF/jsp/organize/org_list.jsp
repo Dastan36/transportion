@@ -43,26 +43,55 @@
                 del(id);//真正删除的 逻辑
             });
 
+            function del(id) {
+                $.ajax('organize/delete',{           //url      $.ajax(url,options)
+                    type:"post",                         //提交方法
+                    data:{"orgId":id},                //提交的参数
+                    dataType:'json',                     //接受到信息如何处理
+                    success:function(data){
+                        if(data && data.success){        //success 状态为4  http200
+                            alert('删除成功');
+                            window.location.href = 'organize/orglist';
+                        }else{
+                            alert("删除失败");
+                        }
+                    }
+                })
+            }
+
+            $('.create').click(function () {
+                layui.use(['form', 'layer'], function () {
+                    var form = layui.form;
+                    form.render();
+                    var layer = layui.layer;
+                    layer.open({
+                        type: 2   //iframe层
+                        , content: ['organize/toadd', 'no']  //这里content是一个URL，如果你不想让iframe出现滚动条 加 no
+                        , title: '添加机构'
+                        , area: ['600px', '200px']            //宽高
+                        , btn: ['添加', '关闭']
+                        ,success:function (layero, index) {
+                            lay
+                        }
+                        , yes: function (index, layero) { //当前层索引、当前层DOM对象
+                            //使用页面的提交按钮提交
+                            var body = layer.getChildFrame('body', index);//得到弹出框中页面的body
+                            //var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                            //console.log(body.html()) //得到iframe页的body内容
+                            body.find('.createBtn').click();
+                        }
+                        , btn2: function (index, layero) {
+                            layer.close(index);
+                        }
+                    })
+                })
+            })
         })
 
-        function del(id) {
-            $.ajax('organize/delete',{           //url      $.ajax(url,options)
-                type:"post",                         //提交方法
-                data:{"orgId":id},                //提交的参数
-                dataType:'json',                     //接受到信息如何处理
-                success:function(data){
-                    if(data && data.success){        //success 状态为4  http200
-                        alert('删除成功');
-                        window.location.href = 'organize/orglist';
-                    }else{
-                        alert("删除失败");
-                    }
-                }
-            })
-        }
+
     </script>
 </head>
-<body>
+<body style="height: 100%">
 <table class="layui-table" >
     <colgroup>
         <col width="150">
@@ -75,7 +104,7 @@
         <th>机构名称</th>
         <th>创建时间</th>
         <th>操作
-            <button onclick="window.location.href='organize/toadd'" class="layui-btn layui-btn-sm">
+            <button class="layui-btn layui-btn-sm create">
                 <i class="layui-icon">&#xe654;</i>
             </button>
         </th>

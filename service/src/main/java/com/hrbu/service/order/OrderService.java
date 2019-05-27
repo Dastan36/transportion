@@ -8,8 +8,10 @@ import java.util.Map;
 
 public interface OrderService {
 
-    //订单 二级联动
-    List<Station> selectCity() throws Exception;
+    //订单 三级联动
+    List<Station> selectProvince() throws Exception;
+
+    List<Station> selectCity(String province) throws Exception;
 
     List<Station> selectStation(String city) throws Exception;
 
