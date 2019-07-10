@@ -26,11 +26,11 @@
                 )
             </if>
             <if test="userId != null and userId != ''">
-                and userId = #{userId}
+                and t_complaint.userId = #{userId}
             </if>
 
             <if test="orderId != null and orderId != ''">
-                and orderId=#{orderId}
+                and t_complaint.orderId like concat('%',#{orderId},'%')
             </if>
         </where>
     </select>
@@ -59,7 +59,7 @@
                 and t_complaint.userId = #{userId}
             </if>
             <if test="orderId != null and orderId != ''">
-                and t_order.orderId=#{orderId}
+                and t_order.orderId like concat('%',#{orderId},'%')
             </if>
         </where>
         order by t_complaint.createTime desc ,t_order.orderId desc limit #{pageRow},9

@@ -2,8 +2,8 @@ package com.hrbu.controller;
 
 import com.hrbu.domain.Complaint;
 import com.hrbu.domain.Order;
-import com.hrbu.domain.Province;
 import com.hrbu.service.compensate.CompensateService;
+import com.hrbu.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +19,17 @@ import java.util.*;
 public class CompensateController {
     @Autowired
     private CompensateService compensateService;
+    @Autowired
+    private OrderService orderService;
+    @RequestMapping("/tolist")
+    public String toList(){
 
+        return "compensate/compensate_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/compensatelist")
-    public String complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
+    public Map complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -37,11 +45,13 @@ public class CompensateController {
 
         List compensateList = compensateService.selectCompensate(map);
         int pageCount = compensateService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
-        model.addAttribute("compensateList",compensateList);//因为主外键关系  order--->complaint
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "compensate/compensate_list";
+        //        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("compensateList",compensateList);//因为主外键关系  order--->complaint
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("compensateList",compensateList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
     @RequestMapping("/tocreate")
@@ -54,12 +64,18 @@ public class CompensateController {
     @RequestMapping("/compensateVerifyOrderId")
     @ResponseBody
     public Map compensateVerifyOrderId(String orderId) throws Exception {
-        List<Order> order = compensateService.compensateVerifyOrderId(orderId);//判断订单号在投诉模块中的投诉状态，可理赔
         Map map = new HashMap();
-        if (order.size() == 0){
+        Order order = orderService.selectById(orderId);
+        if (order == null){
             map.put("order","null");
+            return map;
+        }
+        List<Order> orders = compensateService.compensateVerifyOrderId(orderId);//判断订单号在投诉模块中的投诉状态，可理赔
+        if (orders.size() == 0){
+            map.put("order","false");
+            return map;
         }else{
-            for (Order order1 : order) {
+            for (Order order1 : orders) {
                 for (Complaint complaint : order1.getComplaint()) {
                     if ("可理赔".equals(complaint.getStatus())){//投诉状态 是否是可理赔
                         map.put("order","true");
@@ -67,8 +83,9 @@ public class CompensateController {
                     }
                 }
             }
+            return map;
         }
-        return map;
+
     }
 
     @RequestMapping("/compensateVerify")

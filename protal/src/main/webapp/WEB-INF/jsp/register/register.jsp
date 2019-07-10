@@ -64,12 +64,18 @@
                 <input type="password" id="password2" name="password2" required lay-verify="pass2" lay-verType="tips"  placeholder="请再次输入密码" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item">
+        <%--<div class="layui-form-item">
             <label class="layui-form-label">验证码</label>
             <div class="layui-input-inline">
                 <input type="text" id="validatecode" name="validatecode" required lay-verify="validatecode" lay-verType="tips" placeholder="请输入验证码" autocomplete="off" class="layui-input">
             </div>
             <img id="img" src="validatecode/show" title="看不清楚，换一张" alt="验证码">
+        </div>--%>
+        <div class="layui-form-item">
+            <label class="layui-form-label">滑动验证</label>
+            <div class="layui-input-inline" required lay-verify="sliderVerify" lay-verType="tips">
+                <div id="slider"></div>
+            </div>
         </div>
         ${registerMsg}
         <div align="center" class="layui-form-item">
@@ -87,7 +93,33 @@
                 $('#img').attr('src','validatecode/show?random='+Math.random());
             })
         })
-        //Demo
+
+        layui.config({
+            base: 'Binary/layui_exts/sliderVerify/'
+        }).extend({ //设定模块别名
+            sliderVerify: 'sliderVerify'
+        }).use(['sliderVerify', 'jquery', 'form'], function() {
+            var sliderVerify = layui.sliderVerify,
+                form = layui.form;
+            var slider = slider = sliderVerify.render({
+                elem: '#slider',
+                isAutoVerify: false,//关闭自动验证msg 可以手动验证
+                //bg : 'layui-bg-red',//自定义背景样式名
+                text: '请拖动滑块验证',
+                onOk: function () {//当验证通过回调
+                    layer.tips("滑块验证通过");
+                }
+            })
+            form.verify({
+                sliderVerify:function(value,item){
+                    //获取当前实例是否已经滑动成功
+                    if (!slider.isOk()){
+                        return "请拖动滑块验证"
+                    }
+                }
+            })
+        })
+
         layui.use('form', function(){
             var form = layui.form;
             var phone;

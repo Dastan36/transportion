@@ -25,6 +25,8 @@
       insert into t_organize (orgId,orgName,createTime) VALUES(#{orgId},#{orgName},#{createTime})
     </insert>
 
+
+
     <delete id="deleteOrg" parameterType="java.lang.String">
         delete from t_organize where orgId = #{orgId}
     </delete>

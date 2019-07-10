@@ -14,9 +14,9 @@ public interface OrganizeMapper {
 
     int saveOrg(Organize organize) throws Exception;
 
-    void deleteOrg(String orgId) throws Exception;
+    int deleteOrg(String orgId) throws Exception;
 
-    void updateOrg(Organize organize) throws Exception;
+    int updateOrg(Organize organize) throws Exception;
 
     String selectIdByAdminName(String orgName) throws Exception;
 

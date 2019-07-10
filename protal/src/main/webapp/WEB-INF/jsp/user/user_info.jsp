@@ -16,15 +16,41 @@
 <head>
     <title>用户信息</title>
     <base href="<%=basePath%>">
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/modules/layui.css">
-    <script src="Binary/js/jquery1.9.1.js"></script>
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
 </head>
+<script>
+    $(function () {
+        $('.updatePass').click(function () {
+            layui.use(['form', 'layer'], function () {
+                var form = layui.form;
+                form.render();
+                var layer = layui.layer;
+                layer.open({
+                    type: 2   //iframe层
+                    , content: ['user/toupdatepassword', 'no']  //这里content是一个URL，如果你不想让iframe出现滚动条 加 no
+                    , title: '修改密码'
+                    , area: ['600px', '400px']            //宽高
+                    , btn: ['确定', '关闭']
+                    , offset:'c'
+                    , yes: function (index, layero) { //当前层索引、当前层DOM对象
+                        var form = layer.getChildFrame('form', index);//得到弹出框中页面的body
+                        //var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        //console.log(body.html()) //得到iframe页的body内容
+                        form.find('.createBtn').click();
+                    }
+                    , btn2: function (index, layero) {
+                        layer.close(index);
+                    }
+                })
+            })
+        })
+    })
+</script>
 <body>
-<form class="layui-form" action="user/update">
+<%--action="user/update"--%>
+<form class="layui-form userForm" >
     <h2>个人资料设置</h2>
     <br>
-    <a style="font-size: 15px;font-style: italic" href="user/toupdatepassword">修改密码</a>
+    <a class="updatePass" style="font-size: 15px;font-style: italic;cursor:pointer" >修改密码</a>
     <br><br>
     <h2>基本信息</h2>
     <br><br>
@@ -46,7 +72,7 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
         </div>
     </div>
 
@@ -84,6 +110,44 @@
                     }
                 }
             }
+        })
+        form.on('submit(*)', function (data) {
+            //console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            //console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            //console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+
+            $.ajax('user/update', {
+                type: 'POST',
+                data: $('.userForm').serialize(),
+                dataType: 'json',
+                async: false,//默认为true异步
+                success: function (data) {
+                    //alert(data.pay)
+                    if (data) {
+                        layui.use(['layer'], function () {
+                            var layer = layui.layer;
+                            layer.msg('修改成功', {
+                                icon: 1
+                                ,time:1000
+                            },function () {
+                                loadPage('user/userinfo');
+                            });
+                        })
+                    }else{
+                        layui.use(['layer'], function () {
+                            var layer = layui.layer;
+                            layer.msg('修改失败', {
+                                icon: 1
+                                ,time:1000
+                            },function () {
+                                loadPage('user/userinfo');
+                            });
+                        })
+                    }
+                }
+            })
+            return false;//阻止表单跳转
         })
     });
 </script>

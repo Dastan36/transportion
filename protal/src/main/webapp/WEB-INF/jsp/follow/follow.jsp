@@ -15,7 +15,7 @@
 <html>
 <head>
     <base href="<%=basePath%>">
-    <title>在线下单</title>
+    <title>货运追踪</title>
     <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
     <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
     <script src="Binary/js/jquery1.9.1.js"></script>
@@ -29,8 +29,8 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <c:choose>
-                    <c:when test="${userName!=null}">
-                        <a >${userName}</a>
+                    <c:when test="${user.userName!=null}">
+                        <a style="cursor:pointer">${user.userName}</a>
                         <dl class="layui-nav-child">
                             <dd><a href="center" target="_self">会员中心</a></dd>
                             <dd><a href="javascript:;">退出</a></dd>

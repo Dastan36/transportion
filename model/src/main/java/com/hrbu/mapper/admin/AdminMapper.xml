@@ -7,12 +7,33 @@
      -->
 <mapper namespace="com.hrbu.mapper.admin.AdminMapper">
 
-    <select id="findAdminList" resultType="com.hrbu.domain.Admin">
-        SELECT * FROM t_admin
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+        select count(1) from t_admin
+    </select>
+
+    <select id="findAdminList" parameterType="java.util.Map" resultType="com.hrbu.domain.Admin">
+        SELECT * FROM t_admin order by createTime desc limit #{pageRow},9
     </select>
 
     <select id="AdminLogin" parameterType="com.hrbu.domain.Admin" resultType="com.hrbu.domain.Admin">
         SELECT * FROM t_admin where adminName = #{adminName} and password = #{password}
     </select>
+
+    <select id="findAdminById" parameterType="java.lang.String" resultType="com.hrbu.domain.Admin">
+        SELECT * FROM t_admin where adminId = #{adminId}
+    </select>
+
+    <insert id="saveAdmin" parameterType="com.hrbu.domain.Admin">
+      insert into t_admin (adminId,adminName,password,createTime) VALUES(#{adminId},#{adminName},#{password},#{createTime})
+    </insert>
+
+    <delete id="deleteAdmin" parameterType="java.lang.String">
+        delete from t_admin where adminId = #{adminId}
+    </delete>
+
+    <update id="updateAdmin" parameterType="com.hrbu.domain.Admin">
+        UPDATE t_admin SET adminName = #{adminName},password = #{password}
+        WHERE adminId = #{adminId}
+    </update>
 
 </mapper>

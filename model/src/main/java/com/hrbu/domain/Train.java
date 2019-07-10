@@ -11,6 +11,7 @@ public class Train {
     private Date createTime;
     private List<Way> way;
     private String createWay;//是否创建线路
+    private List<TrainsOrder> trainsOrders;
 
     public Train() {
     }
@@ -21,6 +22,10 @@ public class Train {
         this.createTime = createTime;
         this.way = way;
         this.createWay = createWay;
+    }
+
+    public Train(List<TrainsOrder> trainsOrders) {
+        this.trainsOrders = trainsOrders;
     }
 
     public String getTraId() {
@@ -61,6 +66,14 @@ public class Train {
 
     public void setCreateWay(String createWay) {
         this.createWay = createWay;
+    }
+
+    public List<TrainsOrder> getTrainsOrders() {
+        return trainsOrders;
+    }
+
+    public void setTrainsOrders(List<TrainsOrder> trainsOrders) {
+        this.trainsOrders = trainsOrders;
     }
 
     @Override

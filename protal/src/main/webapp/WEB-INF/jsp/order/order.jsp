@@ -22,6 +22,32 @@
     <script src="Binary/js/jquery1.9.1.js"></script>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PlhFWpA02aoURjAOpnWcRGqw7AI8EEyO"></script>
 
+    <style>
+        input.unit{
+            padding-right: 40px;
+        }
+        span.unit{
+            position:absolute;
+            top:8px;
+            right: 18px;
+        }
+        input.goodsWeight{
+            padding-right: 40px;
+        }
+        span.goodsWeight{
+            position:absolute;
+            top:8px;
+            right: 18px;
+        }
+        input.goodsVolume{
+            padding-right: 40px;
+        }
+        span.goodsVolume{
+            position:absolute;
+            top:8px;
+            right: 18px;
+        }
+    </style>
 </head>
 <body style="background-color: #f2f2f2">
 <div class="layui-layout layui-layout-admin">
@@ -30,8 +56,8 @@
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <c:choose>
-                        <c:when test="${userName!=null}">
-                            <a >${userName}</a>
+                        <c:when test="${user.userName!=null}">
+                            <a style="cursor:pointer">${user.userName}</a>
                             <dl class="layui-nav-child">
                                 <dd><a href="center" target="_self">会员中心</a></dd>
                                 <dd><a href="javascript:;">退出</a></dd>
@@ -46,8 +72,10 @@
         </div>
 
     <div id="content" style="margin: 0 250px 0 250px;padding: 20px;background-color: #ffffff;">
-        <form class="layui-form" action="ali/toindex">
+        <%--action="ali/toindex"--%>
+        <form class="layui-form orderForm" >
             <div class="layui-form-item">
+                <input type="file"   class="layui-input" >
                 <h2>发收货信息</h2>
                 <br><br>
                 <label class="layui-form-label">发货人姓名</label>
@@ -75,13 +103,13 @@
                 <label class="layui-form-label">寄货地址</label>
                 <div class="layui-input-inline">
                     <select name="senderProvince" required lay-verify="required" lay-filter="province1">
-                        <option value="">请选择省，直辖市，自治区</option>
+                        <option value="">请选择省,直辖市,自治区</option>
                         <c:forEach items="${provinceList}" var="province" varStatus="status">
                             <option value="${province.province}">${province.province}</option>
                         </c:forEach>
                     </select>
                     <select id="city1" name="city" required lay-verify="required" lay-filter="city1">
-                        <option value="">请选择市，县</option>
+                        <option value="">请选择市,县</option>
                         <c:forEach items="${cityList}" var="city" varStatus="status">
                             <option value="${city.city}" name="city">${city.city}</option>
                         </c:forEach>
@@ -94,13 +122,13 @@
                 <label class="layui-form-label">收货地址</label>
                 <div class="layui-input-inline">
                     <select name="receiptProvince" required lay-verify="required" lay-filter="province2">
-                        <option value="">请选择省，直辖市，自治区</option>
+                        <option value="">请选择省,直辖市,自治区</option>
                         <c:forEach items="${provinceList}" var="province" varStatus="status">
                             <option value="${province.province}">${province.province}</option>
                         </c:forEach>
                     </select>
                     <select id="city2" name="city2" required lay-verify="reqired" lay-filter="city2">
-                        <option value="">请选择市，县</option>
+                        <option value="">请选择市,县</option>
                         <c:forEach items="${cityList}" var="city" varStatus="status">
                             <option value="${city.city}" name="city">${city.city}</option>
                         </c:forEach>
@@ -116,15 +144,27 @@
                 <br><br>
                 <label class="layui-form-label">货物名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="goodsName" placeholder="例：煤、石油、金矿" required lay-verify="required" autocomplete="off" class="layui-input" >
+                    <%--<input type="text" name="goodsName" placeholder="例：煤、石油、金矿" required lay-verify="required" autocomplete="off" class="layui-input" >--%>
+                    <select id="goodsName" name="goodsName" required lay-verify="required">
+                        <option value=""></option>
+                        <option value="煤">煤</option>
+                        <option value="石油">石油</option>
+                        <option value="非矿">非矿</option>
+                        <option value="金矿">金矿</option>
+                        <option value="焦炭">焦炭</option>
+                        <option value="氧化铝">氧化铝</option>
+                        <option value="磷矿">磷矿</option>
+                    </select>
                 </div>
                 <label class="layui-form-label">重量</label>
                 <div class="layui-input-inline">
-                    <input id="goodsWeight" type="text" name="goodsWeight" onkeyup="sum(this);" placeholder="请输入重量(kg)" required lay-verify="number" autocomplete="off" class="layui-input" >
+                    <input id="goodsWeight" type="text" name="goodsWeight" onkeyup="sum(this);" placeholder="请输入重量(t)"  lay-verify="number" lay-verType="msg" autocomplete="off" class="layui-input goodsWeight" >
+                    <span class="goodsWeight">t</span>
                 </div>
                 <label class="layui-form-label">体积</label>
                 <div class="layui-input-inline">
-                    <input id="goodsVolume" type="text" name="goodsVolume" placeholder="请输入体积(m³)" required lay-verify="number" autocomplete="off" class="layui-input" >
+                    <input id="goodsVolume" type="text" name="goodsVolume" placeholder="请输入体积(m³)"  lay-verify="number" lay-verType="msg" autocomplete="off" class="layui-input goodsVolume" >
+                    <span class="goodsVolume">m³</span>
                 </div>
             </div>
 
@@ -137,7 +177,8 @@
                 </div>
                 <label class="layui-form-label">总价</label>
                 <div class="layui-input-inline">
-                    <input id="money" type="text" name="money"  value="" readonly autocomplete="off" required lay-verify="number" class="layui-input" >
+                    <input id="money" type="text" name="money"  value="" readonly autocomplete="off"  lay-verify="number" class="layui-input unit" >
+                    <span class="unit">元</span>
                     <%--<button id="yugu" type="button"  autocomplete="off" class="layui-btn" >预估</button>--%>
                 </div>
                 <label class="layui-form-label">付款方式</label>
@@ -153,12 +194,59 @@
             <div class="layui-form-item">
                 <div class="layui-input-block" style="float: right">
                     <%--class 中的是控制禁用样式  另一个是控制点击禁用事件--%>
-                    <button class="layui-btn <c:if test="${user.userName eq null}">layui-btn-disabled</c:if>" lay-submit lay-filter="formDemo" <c:if test="${user.userName eq null}"> disabled </c:if> >马上下单</button>
+                    <button class="layui-btn <c:if test="${user.userName eq null}">layui-btn-disabled</c:if>" lay-submit lay-filter="*" <c:if test="${user.userName eq null}"> disabled </c:if> >马上下单</button>
                 </div>
             </div>
         </form>
         <div id="allMap" style="display: none"></div>
         <script>
+
+            $(function(){
+                //alert("asd");
+                layui.use('form',function() {
+                    var form = layui.form;
+                    form.render();
+                    form.render('select');
+                    form.on('submit(*)', function (data) {
+                        //console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+                        //console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+                        //console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+                        //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                        //alert("asd");
+                        var ss = $("#senderStation option:selected").val();
+                        var rs = $("#receiptStation option:selected").val();
+                        if (ss == rs){
+                            layui.use(['layer'],function () {
+                                var layer = layui.layer;
+                                layer.msg('收发车站不能一样');
+                            })
+                        }else{
+                            $.ajax('ali/toindex', {
+                                type: 'POST',
+                                data: $('.orderForm').serialize(),
+                                dataType: 'json',
+                                async: false,//默认为true异步
+                                success: function (data) {
+                                    //跳页面传值过去  jquery.query插件 接收值
+
+                                    if (data.pay == 0) {           //到付 直接返回订单列表
+                                        var url = "order/tolist";
+                                        window.location.href="center?url="+url;
+                                        //window.location.href="order/tolist";
+                                    }else{                          //在线付
+                                        //alert(data.pay);
+                                        var url= "ali/topay?orderId=";
+                                        //alert(url)
+                                        window.location.href="center?url="+url+"&orderId="+data.pay+"";
+                                    }
+                                }
+                            })
+                        }
+
+                        return false;//阻止表单跳转
+                    })
+                })
+            })
 
             $(function() {
                 var city1;
@@ -175,7 +263,7 @@
                     goodsVolume = $('#goodsVolume').val();
 
                     if (distance != '' && goodsWeight != '' && goodsVolume != '') {
-                        var money = goodsWeight * 10 + goodsVolume * 100 + distance / 10000 * 20;
+                        var money = goodsWeight * 1000 + goodsVolume * 100 + distance / 10000 * 20;
                         $('#money').attr('value', money.toFixed(0));
                     }
                 })
@@ -211,27 +299,17 @@
                     form.on('select(city1)', function (data) {
                         city1 = data.value;
 
+                        $("#senderStation").find("option").remove();
+                        option1(city1);
                         form.render();
-                        if (city1 != city2) {   //限制两个城市不能一样
-                            //alert(data.value);
-                            $("#senderStation").find("option").remove();
-                            option1(city1);
-                        }else{
-                            $("#senderStation").find("option").remove();
-                            form.render();
-                        }
                     });
                     //二级联动城市2
                     form.on('select(city2)', function (data) {
                         city2 = data.value;
 
-                        if (city2 != city1) {
-                            $("#receiptStation").find("option").remove();
-                            option2(city2);
-                        }else{
-                            $("#receiptStation").find("option").remove();
-                            form.render();
-                        }
+                        $("#receiptStation").find("option").remove();
+                        option2(city2);
+                        form.render();
                     });
 
                     form.on('select(senderStation)',function (data) {
@@ -378,7 +456,7 @@
                             var point2 = new BMap.Point(parseFloat(stationList[1].coordinate_l), parseFloat(stationList[1].coordinate_r));
                             distance = bMap.getDistance(point1, point2);
                             if (distance != '' && goodsWeight != '' && goodsWeight != null && goodsVolume != '' && goodsVolume != null) {
-                                var money = goodsWeight * 10 + goodsVolume * 100 + distance / 10000 * 20;
+                                var money = goodsWeight * 1000 + goodsVolume * 100 + distance / 10000 * 20;
                                 $('#money').attr('value', money.toFixed(0));
                             }
                         }

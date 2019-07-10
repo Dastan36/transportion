@@ -11,11 +11,11 @@
       select count(1) from t_user
         <where>
             <if test="userName != null and userName != ''">
-                and userName=#{userName}
+                and userName like concat('%',#{userName},'%')
             </if>
 
             <if test="telephone != null and telephone != ''">
-                and telephone=#{telephone}
+                and telephone like concat('%',#{telephone},'%')
             </if>
         </where>
     </select>
@@ -25,11 +25,11 @@
         SELECT * FROM t_user
         <where>
             <if test="userName != null and userName != ''">
-                and userName=#{userName}
+                and userName like concat('%',#{userName},'%')
             </if>
 
             <if test="telephone != null and telephone != ''">
-                and telephone=#{telephone}
+                and telephone like concat('%',#{telephone},'%')
             </if>
         </where>
         order by createTime desc limit #{pageRow},9
@@ -48,7 +48,11 @@
     </delete>
 
     <update id="updateUser" parameterType="com.hrbu.domain.User">
-        UPDATE t_user SET userName = #{userName},telephone = #{telephone} WHERE userId = #{userId}
+        UPDATE t_user SET userName = #{userName},telephone = #{telephone}
+        <if test="status != null and status != ''">
+            ,status = #{status}
+        </if>
+        WHERE userId = #{userId}
     </update>
 
     <select id="userLogin" parameterType="com.hrbu.domain.User" resultType="com.hrbu.domain.User">

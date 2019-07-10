@@ -16,10 +16,7 @@
 <head>
     <title>快运班列方案细节</title>
     <base href="<%=basePath%>">
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/modules/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
-    <script src="Binary/js/jquery1.9.1.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PlhFWpA02aoURjAOpnWcRGqw7AI8EEyO"></script>
+
 
 </head>
 <body style="height: 100%">
@@ -94,17 +91,23 @@
                     layer.open({                    //注意要设置此页面的body height
                         type: 1,
                         title:'列车线路',
-                        offset: ['50px', '50px'],	//同时定义top、left坐标  定位
+                        offset: 'c',	//同时定义top、left坐标  定位
                         //resize:true,//不允许拉伸
                         //move: false,//禁止拖拽
                         area: ['80%', '75%'], //宽高
                         content: $('#allMap'), //这里content是一个DOM，这个元素要放在body根节点下
-                        success:bdMap(stationList) //执行地图函数
+                        success:function(layero){
+                            // 如果弹层的内容content是某个DOM元素的话，要放在body的根节点下。不能放在div里面了
+                            //这里就是在一个div中不是body根节点下  会出现遮罩层把弹出层遮住
+                            var mask = $(".layui-layer-shade");
+                            mask.appendTo(layero.parent());
+                            //其中：layero是弹层的DOM对象
+                            bdMap(stationList) //执行地图函数
+                        }
                     });
                 })
             }
         })
-
     }
 
     function bdMap(stationList) {

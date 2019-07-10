@@ -28,7 +28,7 @@
                and userId = #{userId}
             </if>
             <if test="orderId != null and orderId != ''">
-                and orderId=#{orderId}
+                and orderId like concat('%',#{orderId},'%')
             </if>
         </where>
     </select>
@@ -56,7 +56,7 @@
                 and userId = #{userId}
             </if>
             <if test="orderId != null and orderId != ''">
-                and orderId=#{orderId}
+                and orderId like concat('%',#{orderId},'%')
             </if>
         </where>
         order by createTime desc limit #{pageRow},9

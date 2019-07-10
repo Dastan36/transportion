@@ -15,7 +15,7 @@
                     <where>
                         t_trains.traId = t_way.traId
                         <if test="traName != null and traName != ''">
-                            and traName=#{traName}
+                            and traName like concat('%',#{traName},'%')
                         </if>
                     </where>
             )AS a GROUP BY a.traId,a.traName,a.createTime
@@ -29,7 +29,7 @@
         <where>
             t_trains.traId = t_way.traId
             <if test="traName != null and traName != ''">
-                and traName=#{traName}
+                and traName like concat('%',#{traName},'%')
             </if>
         </where>
         ) as a group by a.traId,a.traName,a.createTime
@@ -53,6 +53,7 @@
         select stationId, stationName from t_station
     </select>
 
+    <!--批量添加-->
     <insert id="insertWay" parameterType="java.util.HashMap">
         insert into t_way (stationId,traId,i,inTime,outTime) values
         <foreach collection="wayList" item="item" index="index" separator=",">
@@ -90,5 +91,10 @@
     <delete id="deleteWay" parameterType="java.lang.String">
         delete FROM t_way WHERE traId = #{traId}
     </delete>
+
+    <select id="selectTimeByStationIdAndTrainId" parameterType="java.util.HashMap" resultMap="waySataionTrain">
+        select inTime,outTime from t_way,t_station,t_trains  where t_station.stationId = t_way.stationId and t_way.traId = t_trains.traId
+        and t_way.stationId = #{stationId} and t_way.traId = #{traId}
+    </select>
 
 </mapper>

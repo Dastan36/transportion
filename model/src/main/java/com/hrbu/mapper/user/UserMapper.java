@@ -14,15 +14,15 @@ public interface UserMapper {
 
     public User findUserById(String userId) throws Exception;
 
-    public void saveUser(User user) throws Exception;
+    public int saveUser(User user) throws Exception;
 
     public void deleteUser(String userId) throws Exception;
 
-    public void updateUser(User user) throws Exception;
+    public int updateUser(User user) throws Exception;
 
     public User userLogin(User user) throws Exception;
 
-    void updatePassword(Map map) throws Exception;
+    int updatePassword(Map map) throws Exception;
 
     public List<User> verifyPhone(String userId) throws Exception;
 

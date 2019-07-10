@@ -11,13 +11,13 @@ public interface ComplaintMapper {
 
     List<Complaint> selectComplaint(Map map)throws Exception;
 
-    void cancelComplaint(String complaintId)throws Exception;
+    void cancelComplaint(String orderId)throws Exception;
 
-    void insertComplaint(Map map)throws Exception;
+    int  insertComplaint(Map map)throws Exception;
 
     Order selectDetails(String complaintId)throws Exception;
 
-    void updateComplaint(Map map)throws Exception;
+    int updateComplaint(Map map)throws Exception;
 
     Order complaintVerifyOrderId(String orderId)throws Exception;
 }

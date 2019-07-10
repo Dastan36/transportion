@@ -24,17 +24,20 @@ public class UserProtalController {
     private UserService userService;
 
     @RequestMapping("/userinfo")
-    public String userInfo(HttpSession session,Model model, String userId) throws Exception {
+    public String userInfo(HttpSession session,Model model) throws Exception {
+        String userId = (String) session.getAttribute("userId");
         User user = userService.findUserById(userId);
         model.addAttribute("user",user);
         session.setAttribute("user",user);
         return "user/user_info";
     }
 
+    @ResponseBody
     @RequestMapping("/update")
-    public String update(User user) throws Exception {
-        userService.update(user);
-        return "redirect:/user/userinfo?userId="+user.getUserId();
+    public boolean update(User user) throws Exception {
+        boolean flag = false;
+        flag = userService.update(user);
+        return flag;
     }
 
     @RequestMapping("/toupdatepassword")
@@ -44,14 +47,17 @@ public class UserProtalController {
     }
 
 
-    //修改秘吗
+    //修改密码
+    @ResponseBody
     @RequestMapping("/updatepassword")
-    public String updatePassword(@RequestParam(value = "newPassword") String password, String userId) throws Exception {
+    public boolean updatePassword(@RequestParam(value = "newPassword") String password, String userId) throws Exception {
         Map map = new HashMap();
         map.put("password",password);
         map.put("userId",userId);
-        userService.updatePassword(map);
-        return "redirect:/user/userinfo?userId="+userId;
+        boolean flag = false;
+        flag = userService.updatePassword(map);
+        //return "redirect:/user/userinfo?userId="+userId;
+        return flag;
     }
 
     //验证验证码

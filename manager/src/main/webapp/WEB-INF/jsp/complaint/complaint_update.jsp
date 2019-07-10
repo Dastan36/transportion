@@ -16,18 +16,12 @@
 <head>
     <base href="<%=basePath%>">
     <title>在线下单</title>
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
+    <link href="Binary/ueditor/themes/default/css/ueditor.css">
     <script src="Binary/js/jquery1.9.1.js"></script>
     <!-- 加载编辑器的容器 -->
     <script id="container" name="content" type="text/plain">
     </script>
-    <!-- 配置文件 -->
-    <script type="text/javascript" src="Binary/ueditor/ueditor.config.js"></script>
-    <!-- 编辑器源码文件 -->
-    <script type="text/javascript" src="Binary/ueditor/ueditor.all.min.js"></script>
 
-    <script type="text/javascript" charset="utf-8" src="Binary/ueditor/lang/zh-cn/zh-cn.js"></script>
 
 
     <style>
@@ -40,7 +34,7 @@
 <body style="background-color: #f2f2f2;overflow-x:auto; overflow-y:hidden;">
 <div class="layui-layout layui-layout-admin">
     <div id="content" style="margin: 0 125px 0 125px;padding: 40px;background-color: #ffffff;">
-        <form class="layui-form" action="complaint/update" enctype="multipart/form-data">
+        <form class="layui-form complaintForm" >
             <input name="complaintId" hidden value="${complaint.complaint[0].complaintId}">
             <div class="layui-form-item">
                 <h2>投诉人信息</h2>
@@ -77,7 +71,6 @@
                 </div>
             </div>
 
-
             <div class="layui-form-item">
                 <h2>投诉信息</h2>
                 <br><br>
@@ -87,42 +80,48 @@
                 <!-- 实例化编辑器 -->
                 <script type="text/javascript">
 
-                    var ue = UE.getEditor('editor',{toolbars: [
-                            ['undo', 'redo', 'bold', 'date', 'time','insertimage']
-                        ]});
-                    ue.ready(function() {
-                        ue.setDisabled();//不可编辑
-                    });
+                    $(function () {
+                        UE.delEditor('editor');//防止第二次加载 不渲染
+                        var ue = UE.getEditor('editor',{toolbars: [
+                                ['undo', 'redo', 'bold', 'date', 'time','insertimage']
+                            ]});
+                        ue.ready(function() {
+                            ue.setDisabled();//不可编辑
+                        });
+                    })
 
-                    UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
-                    UE.Editor.prototype.getActionUrl = function(action){
-                        console.log("action:"+action);
-                        if (action == 'uploadimage') {
 
-                            return "/transportion/protal/upload/images";
-
-                        } else {
-
-                            return this._bkGetActionUrl.call(this, action);
-
-                        }
-
-                    }
 
                 </script>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block" style="float: right">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                    <button class="layui-btn subBtn" type="button" lay-submit lay-filter="formDemo">提交</button>
                 </div>
             </div>
         </form>
         <script>
-            //Demo
-            layui.use('form', function(){
-                var form = layui.form;
+            $(function () {
+                layui.use('form', function(){
+                    var form = layui.form;
+                    form.render('select');
+                });
 
-            });
+                $(document).on('click','.subBtn',function () {
+                    $.ajax('complaint/update',{
+                        type:'POST',
+                        data:$('.complaintForm').serialize(),  //整个表单的内容
+                        dataType:'json',
+                        async:false,//默认为true异步
+                        success:function (data) {
+                            if (data) {
+                                loadPage('complaint/tolist');
+                            }
+                        }
+                    })
+                })
+            })
+
         </script>
 
     </div>

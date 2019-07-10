@@ -6,6 +6,7 @@ import com.hrbu.service.register.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -27,13 +28,13 @@ public class RegisterController {
     }
 
     @RequestMapping("/register")
-    public String register(HttpSession session, User user, String validatecode) throws Exception {
+    public String register(HttpSession session, User user, @RequestParam(required=false) String validatecode) throws Exception {
 
         String randomCode = (String) session.getAttribute(RANDOMCODEKEY);
 
         user.setUserId(UUID.randomUUID().toString());
         user.setCreateTime(new Date());
-        if (randomCode.equalsIgnoreCase(validatecode)) {
+        /*if (randomCode.equalsIgnoreCase(validatecode)) {
             if (registerService.register(user)) {
                 return "redirect:/touserlogin";  //验证成功跳转到center
             }else{
@@ -42,6 +43,11 @@ public class RegisterController {
         } else {
             session.setAttribute("registerMsg", "验证码错误");
             return "redirect:/register/toregister";  //验证失败跳转到tologin
+        }*/
+        if (registerService.register(user)) {
+            return "redirect:/touserlogin";  //验证成功跳转到center
+        }else{
+            return "redirect:/register/toregister";
         }
     }
 

@@ -12,9 +12,11 @@ public interface StationService {
 
     Station selectStationById(String stationId) throws Exception;
 
-    void saveStation(Map map) throws Exception;
+    String selectStationIdByName(String stationName) throws Exception;
 
-    void deleteStation(String stationId) throws Exception;
+    boolean saveStation(Map map) throws Exception;
 
-    void updateStation(Map map) throws Exception;
+    boolean deleteStation(String stationId) throws Exception;
+
+    boolean updateStation(Map map) throws Exception;
 }

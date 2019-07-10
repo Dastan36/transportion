@@ -12,13 +12,14 @@ public interface OrganizeService {
 
     Organize findOrgById(String orgId) throws Exception;
 
-    boolean saveOrg(Organize organize) throws Exception;
+    boolean saveOrg(Organize organize,String[] proId) throws Exception;
 
-    void deleteOrg(String orgId) throws Exception;
+    boolean deleteOrg(String orgId) throws Exception;
 
     Organize toUpdate(String orgId) throws Exception;
+    List toUpdateSelectproId(String orgId) throws Exception;
 
-    void updateOrg(Organize organize) throws Exception;
+    boolean updateOrg(Organize organize,String[] proId) throws Exception;
 
     String selectIdByAdminName(String orgName) throws Exception;
 

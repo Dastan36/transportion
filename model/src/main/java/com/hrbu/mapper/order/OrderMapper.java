@@ -27,17 +27,17 @@ public interface OrderMapper {
 
     Order selectById(String orderId) throws Exception;
 
-    void updateOrder(Map map) throws Exception;
+    int updateOrder(Map map) throws Exception;
 
     //在线支付 更改订单状态
     void updateOrderMoneyStatus(String orderId) throws Exception;
 
-    void updateGetStatus(Map map) throws Exception;
+    int updateGetStatus(Map map) throws Exception;
 
     //取消订单
-    void  cancelOrder(String orderId) throws Exception;
+    int cancelOrder(String orderId) throws Exception;
 
-    //删除 控制显示
-    void deleteOrder(String orderId) throws Exception;
+    //删除
+    int deleteOrder(String orderId) throws Exception;
 
 }

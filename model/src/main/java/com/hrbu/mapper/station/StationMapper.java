@@ -13,13 +13,15 @@ public interface StationMapper {
 
     Station selectStationById(String stationId) throws Exception;
 
-    void saveStation(Map map) throws Exception;
+    String selectStationIdByName(String stationName) throws Exception;
 
-    void deleteStation(String stationId) throws Exception;
+    int saveStation(Map map) throws Exception;
+
+    int deleteStation(String stationId) throws Exception;
 
     void deleteStationWay(String stationId) throws Exception;
 
-    void updateStation(Map map) throws Exception;
+    int updateStation(Map map) throws Exception;
 
 
 

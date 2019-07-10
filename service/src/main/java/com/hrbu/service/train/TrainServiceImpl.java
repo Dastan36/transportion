@@ -51,22 +51,23 @@ public class TrainServiceImpl implements TrainService{
     }
 
     @Override
-    public void saveTrain(Map map) throws Exception{
+    public boolean saveTrain(Map map) throws Exception{
         map.put("traId",UUID.randomUUID().toString());
         map.put("createTime",new Date());
-        trainMapper.saveTrain(map);
+        int count = trainMapper.saveTrain(map);
+        return count>0;
     }
 
     @Override
-    public void deleteTrain(String traId) throws Exception{
+    public boolean deleteTrain(String traId) throws Exception{
         trainMapper.deleteTrainWay(traId);
-        trainMapper.deleteTrain(traId);
+        int count = trainMapper.deleteTrain(traId);
+        return count>0;
     }
 
     @Override
-    public void updateTrain(Map map) throws Exception{
-
-
-        trainMapper.updateTrain(map);
+    public boolean updateTrain(Map map) throws Exception{
+        int count = trainMapper.updateTrain(map);
+        return count>0;
     }
 }

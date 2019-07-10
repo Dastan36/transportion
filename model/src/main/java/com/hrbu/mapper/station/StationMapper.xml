@@ -12,7 +12,7 @@
         select count(stationId) from t_station
         <where>
             <if test="stationName != null and stationName != ''">
-                and stationName=#{stationName}
+                and stationName like concat('%',#{stationName},'%')
             </if>
         </where>
     </select>
@@ -22,7 +22,7 @@
         SELECT stationId,stationName,coordinate_l,coordinate_r,city ,province FROM t_station
         <where>
             <if test="stationName != null and stationName != ''">
-                and stationName=#{stationName}
+                and stationName like concat('%',#{stationName},'%')
             </if>
         </where>
         order by  coordinate_l desc, coordinate_r desc
@@ -32,6 +32,11 @@
     <select id="selectStationById" parameterType="String" resultType="com.hrbu.domain.Station">
         select stationId, stationName,coordinate_l,coordinate_r,city,province from t_station where stationId = #{stationId}
     </select>
+
+    <select id="selectStationIdByName" parameterType="String" resultType="String">
+        select stationId from t_station where stationName = #{stationName}
+    </select>
+
 
     <insert id="saveStation" parameterType="java.util.HashMap">
         INSERT INTO t_station (stationId,stationName,coordinate_l,coordinate_r,city,province)VALUES(#{stationId},#{stationName},#{coordinate_l},#{coordinate_r},#{city},#{province})
@@ -47,6 +52,7 @@
     <update id="updateStation" parameterType="java.util.HashMap">
         UPDATE t_station SET stationName = #{stationName} ,coordinate_l = #{coordinate_l} ,coordinate_r = #{coordinate_r} ,city = #{city} ,province = #{province} WHERE stationId = #{stationId}
     </update>
+
 
 
 </mapper>

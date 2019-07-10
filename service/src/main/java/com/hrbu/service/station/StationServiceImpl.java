@@ -36,21 +36,30 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public void saveStation(Map map) throws Exception{
+    public String selectStationIdByName(String stationName) throws Exception {
+
+        return stationMapper.selectStationIdByName(stationName);
+    }
+
+    @Override
+    public boolean saveStation(Map map) throws Exception{
         map.put("stationId", UUID.randomUUID().toString());
-        stationMapper.saveStation(map);
+        int count = stationMapper.saveStation(map);
+        return count>0;
     }
 
     @Override
-    public void deleteStation(String stationId) throws Exception{
+    public boolean deleteStation(String stationId) throws Exception{
         stationMapper.deleteStationWay(stationId);
-        stationMapper.deleteStation(stationId);
+        int count = stationMapper.deleteStation(stationId);
+        return count>0;
     }
 
     @Override
-    public void updateStation(Map map) throws Exception{
+    public boolean updateStation(Map map) throws Exception{
 
-        stationMapper.updateStation(map);
+        int count = stationMapper.updateStation(map);
+        return count>0;
     }
 
 

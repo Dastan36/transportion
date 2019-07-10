@@ -6,15 +6,40 @@
     注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
      -->
 <mapper namespace="com.hrbu.mapper.orgProvince.OrgProvinceMapper">
-    
-    <select id="selectProvinceByOrgId" parameterType="java.lang.String" resultMap="orgPro">
-        select province from t_organize_province where orgId = #{orgId}
-    </select>
     <resultMap id="orgPro" type="com.hrbu.domain.Organize">
         <id property="orgId" column="orgId"></id>
-        <collection property="province" ofType="com.hrbu.domain.Province">
+        <collection property="organizeProvince" ofType="com.hrbu.domain.OrganizeProvince">
+            <id property="id" column="id"></id>
             <result property="province" column="province"></result>
         </collection>
     </resultMap>
+    <resultMap id="proPro" type="com.hrbu.domain.Province">
+        <id property="proId" column="proId"></id>
+        <collection property="organizeProvince" ofType="com.hrbu.domain.OrganizeProvince">
+        </collection>
+    </resultMap>
+<!--根据机构id 查省份-->
+    <select id="selectProvinceByOrgId" parameterType="java.lang.String" resultMap="orgPro">
+        select t_organize_province.province from t_organize_province,t_organize where t_organize_province.orgId = t_organize.orgId and t_organize_province.orgId = #{orgId}
+    </select>
+
+    <!--//添加机构时 添加管辖-->
+    <insert id="insertProvinceOrganize" parameterType="java.util.Map">
+        insert into t_organize_province (proId,orgId) values
+        <foreach collection="proId" item="item" index="index" separator=",">
+                (#{item},#{orgId})
+        </foreach>
+    </insert>
+    <!--修改机构时 实现修改 要先删后添-->
+    <delete id="deleteProOrg" parameterType="string">
+        delete from t_organize_province where orgId = #{orgId}
+    </delete>
+<!--根据机构id 查 省份id-->
+    <select id="selectProIdByorgId" parameterType="java.lang.String" resultMap="proPro">
+        select t_province.proId from t_organize_province,t_province where t_organize_province.proId = t_province.proId and t_organize_province.orgId = #{orgId}
+    </select>
+
+
+
 </mapper>
 

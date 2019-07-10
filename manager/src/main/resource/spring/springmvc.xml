@@ -130,4 +130,20 @@
     </mvc:interceptors>
 
 
+    <!-- 让容器 管理SQLSessionFactory mybats分页-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>dialect=MySql</value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+
 </beans>

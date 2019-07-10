@@ -16,18 +16,6 @@
 <head>
     <base href="<%=basePath%>">
     <title>在线下单</title>
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
-    <script src="Binary/js/jquery1.9.1.js"></script>
-    <!-- 加载编辑器的容器 -->
-    <script id="container" name="content" type="text/plain">
-    </script>
-    <!-- 配置文件 -->
-    <script type="text/javascript" src="Binary/ueditor/ueditor.config.js"></script>
-    <!-- 编辑器源码文件 -->
-    <script type="text/javascript" src="Binary/ueditor/ueditor.all.min.js"></script>
-
-    <script type="text/javascript" charset="utf-8" src="Binary/ueditor/lang/zh-cn/zh-cn.js"></script>
 
 
     <style>
@@ -74,7 +62,7 @@
                 </textarea>
                 <!-- 实例化编辑器 -->
                 <script type="text/javascript">
-
+                    UE.delEditor('editor');//防止第二次加载 不渲染
                     var ue = UE.getEditor('editor',{toolbars: [
                             ['undo', 'redo', 'bold', 'date', 'time','insertimage']
                         ]});

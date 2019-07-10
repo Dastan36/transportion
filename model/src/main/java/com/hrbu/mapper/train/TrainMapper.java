@@ -20,10 +20,10 @@ public interface TrainMapper {
 
     Train selectTrainById(String traId) throws Exception;
 
-    void saveTrain(Map map) throws Exception;
+    int saveTrain(Map map) throws Exception;
 
-    void deleteTrain(String traId) throws Exception;
+    int deleteTrain(String traId) throws Exception;
     void deleteTrainWay(String traId) throws Exception;
 
-    void updateTrain(Map map) throws Exception;
+    int updateTrain(Map map) throws Exception;
 }

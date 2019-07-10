@@ -16,77 +16,98 @@
 <head>
     <base href="<%=basePath%>">
     <title>在线下单</title>
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
-    <script src="Binary/js/jquery1.9.1.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PlhFWpA02aoURjAOpnWcRGqw7AI8EEyO"></script>
+    <style>
+        input.unit{
+            padding-right: 40px;
+        }
+        span.unit{
+            position:absolute;
+            top:8px;
+            right: 18px;
+        }
+        input.goodsWeight{
+            padding-right: 40px;
+        }
+        span.goodsWeight{
+            position:absolute;
+            top:8px;
+            right: 18px;
+        }
+        input.goodsVolume{
+            padding-right: 40px;
+        }
+        span.goodsVolume{
+            position:absolute;
+            top:8px;
+            right: 18px;
+        }
+    </style>
 
-    <script>
-    </script>
 </head>
 <body style="background-color: #f2f2f2;overflow-x:auto; overflow-y:hidden;">
 <div class="layui-layout layui-layout-admin">
-    <div id="content" style="margin: 0 125px 0 125px;padding: 40px;background-color: #ffffff;">
-        <form class="layui-form" action="ali/toindex">
+    <div id="content" style="margin: 0 100px 0 100px;padding: 40px;background-color: #ffffff;">
+        <%--action="ali/toindex"--%>
+        <form class="layui-form orderForm" >
             <div class="layui-form-item">
                 <h2>发收货信息</h2>
                 <br><br>
                 <label class="layui-form-label">发货人姓名</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="senderName" placeholder="请输入发货人姓名" required lay-verify="required" autocomplete="off" class="layui-input" >
+                    <input type="text" name="senderName" placeholder="请输入发货人姓名"  lay-verify="required" lay-verType="msg" autocomplete="off" class="layui-input" >
                 </div>
                 <label class="layui-form-label">收货人姓名</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="receiptName" placeholder="请输入收货人姓名" required lay-verify="required" autocomplete="off" class="layui-input" >
+                    <input type="text" name="receiptName" placeholder="请输入收货人姓名"  lay-verify="required" lay-verType="msg" autocomplete="off" class="layui-input" >
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">联系电话</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="senderPhone" placeholder="请输入联系电话" required lay-verify="phone" autocomplete="off" class="layui-input" >
+                    <input type="text" name="senderPhone" placeholder="请输入联系电话"  lay-verify="phone" lay-verType="msg" autocomplete="off" class="layui-input" >
                 </div>
                 <label class="layui-form-label">联系电话</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="receiptPhone" placeholder="请输入联系电话" required lay-verify="phone" autocomplete="off" class="layui-input" >
+                    <input type="text" name="receiptPhone" placeholder="请输入联系电话"  lay-verify="phone" lay-verType="msg" autocomplete="off" class="layui-input" >
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">寄货地址</label>
                 <div class="layui-input-inline">
-                    <select name="senderProvince" required lay-verify="required" lay-filter="province1">
-                        <option value="">请选择省，直辖市，自治区</option>
+                    <select name="senderProvince"  lay-verify="required" lay-verType="msg" lay-filter="province1">
+                        <option value="">请选择省,直辖市,自治区</option>
                         <c:forEach items="${provinceList}" var="province" varStatus="status">
                             <option value="${province.province}">${province.province}</option>
                         </c:forEach>
                     </select>
-                    <select id="city1" name="city" required lay-verify="required" lay-filter="city1">
-                        <option value="">请选择市，县</option>
+                    <select id="city1" name="city"  lay-verify="required" lay-verType="msg"  lay-filter="city1">
+                        <option value="">请选择市,县</option>
                         <c:forEach items="${cityList}" var="city" varStatus="status">
                             <option value="${city.city}" name="city">${city.city}</option>
                         </c:forEach>
                     </select>
-                    <select id="senderStation" name="senderStation" required lay-verify="required" lay-filter="senderStation">
+                    <select id="senderStation" name="senderStation"  lay-verify="required" lay-verType="msg" lay-filter="senderStation">
                         <option value="">请选择车站</option>
                     </select>
 
                 </div>
                 <label class="layui-form-label">收货地址</label>
                 <div class="layui-input-inline">
-                    <select name="receiptProvince" required lay-verify="required" lay-filter="province2">
-                        <option value="">请选择省，直辖市，自治区</option>
+                    <select name="receiptProvince"  lay-verify="required"  lay-verType="msg" lay-filter="province2">
+                        <option value="">请选择省,直辖市,自治区</option>
                         <c:forEach items="${provinceList}" var="province" varStatus="status">
                             <option value="${province.province}">${province.province}</option>
                         </c:forEach>
                     </select>
-                    <select id="city2" name="city2" required lay-verify="reqired" lay-filter="city2">
-                        <option value="">请选择市，县</option>
+                    <select id="city2" name="city2"  lay-verify="reqired" lay-verType="msg" lay-filter="city2">
+                        <option value="">请选择市,县</option>
                         <c:forEach items="${cityList}" var="city" varStatus="status">
                             <option value="${city.city}" name="city">${city.city}</option>
                         </c:forEach>
                     </select>
-                    <select id="receiptStation" name="receiptStation" required lay-verify="required" lay-filter="receiptStation">
+                    <select id="receiptStation" name="receiptStation"  lay-verify="required" lay-verType="msg" lay-filter="receiptStation">
                         <option value="">请选择车站</option>
                     </select>
                 </div>
@@ -97,15 +118,27 @@
                 <br><br>
                 <label class="layui-form-label">货物名称</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="goodsName" placeholder="例：煤、石油、金矿" required lay-verify="required" autocomplete="off" class="layui-input" >
+                    <%--<input type="text" name="goodsName" placeholder="例：煤、石油、金矿"  lay-verify="required" lay-verType="msg" autocomplete="off" class="layui-input" >--%>
+                        <select id="goodsName" name="goodsName" required lay-verify="required" lay-search>
+                            <option value=""></option>
+                            <option value="煤">煤</option>
+                            <option value="石油">石油</option>
+                            <option value="非矿">非矿</option>
+                            <option value="金矿">金矿</option>
+                            <option value="焦炭">焦炭</option>
+                            <option value="氧化铝">氧化铝</option>
+                            <option value="磷矿">磷矿</option>
+                        </select>
                 </div>
                 <label class="layui-form-label">重量</label>
                 <div class="layui-input-inline">
-                    <input id="goodsWeight" type="text" name="goodsWeight" onkeyup="sum(this);" placeholder="请输入重量(kg)" required lay-verify="number" autocomplete="off" class="layui-input" >
+                    <input id="goodsWeight" type="text" name="goodsWeight" onkeyup="sum(this);" placeholder="请输入重量(t)"  lay-verify="number" lay-verType="msg" autocomplete="off" class="layui-input goodsWeight" >
+                    <span class="goodsWeight">t</span>
                 </div>
                 <label class="layui-form-label">体积</label>
                 <div class="layui-input-inline">
-                    <input id="goodsVolume" type="text" name="goodsVolume" placeholder="请输入体积(m³)" required lay-verify="number" autocomplete="off" class="layui-input" >
+                    <input id="goodsVolume" type="text" name="goodsVolume" placeholder="请输入体积(m³)"  lay-verify="number" lay-verType="msg" autocomplete="off" class="layui-input goodsVolume" >
+                    <span class="goodsVolume">m³</span>
                 </div>
             </div>
 
@@ -114,11 +147,12 @@
                 <br>
                 <label class="layui-form-label">运货日期</label>
                 <div class="layui-input-inline">
-                    <input id="transTime" type="text" name="transTime"  required lay-verify="required"  class="layui-input" >
+                    <input id="transTime" type="text" name="transTime"   lay-verify="required" lay-verType="msg" class="layui-input" >
                 </div>
                 <label class="layui-form-label">总价</label>
                 <div class="layui-input-inline">
-                    <input id="money" type="text" name="money"  value="" readonly autocomplete="off" required lay-verify="number" class="layui-input" >
+                    <input id="money" type="text" name="money"  value="" readonly autocomplete="off"  lay-verify="number" class="layui-input unit" >
+                    <span class="unit">元</span>
                     <%--<button id="yugu" type="button"  autocomplete="off" class="layui-btn" >预估</button>--%>
                 </div>
                 <label class="layui-form-label">付款方式</label>
@@ -133,12 +167,53 @@
             <div class="layui-form-item">
                 <div class="layui-input-block" style="float: right">
                     <%--class 中的是控制禁用样式  另一个是控制点击禁用事件--%>
-                    <button class="layui-btn <c:if test="${user.userName eq null}">layui-btn-disabled</c:if>" lay-submit lay-filter="formDemo" <c:if test="${user.userName eq null}"> disabled </c:if>>马上下单</button>
+                    <button class="layui-btn subBtn <c:if test="${user.userName eq null}">layui-btn-disabled</c:if>" lay-submit lay-filter="*" <c:if test="${user.userName eq null}"> disabled </c:if>>马上下单</button>
                 </div>
             </div>
         </form>
-        <div id="allMap" style="display: none"></div>
+
+
         <script>
+            $(function(){
+                //alert("asd");
+                layui.use('form',function() {
+                    var form = layui.form;
+                    form.render();
+                    form.render('select');
+                    form.on('submit(*)', function (data) {
+                        //console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+                        //console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+                        //console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+                        //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                        //alert("asd");
+                        var ss = $("#senderStation option:selected").val();
+                        var rs = $("#receiptStation option:selected").val();
+                        if (ss == rs){
+                            layui.use(['layer'],function () {
+                                var layer = layui.layer;
+                                layer.msg('收发车站不能一样');
+                            })
+                        } else{
+                            $.ajax('ali/toindex', {
+                                type: 'POST',
+                                data: $('.orderForm').serialize(),
+                                dataType: 'json',
+                                async: false,//默认为true异步
+                                success: function (data) {
+                                    //alert(data.pay)
+                                    if (data.pay == 0) {             //到付 直接返回订单列表
+                                        loadPage('order/tolist');
+                                    }else{                               //在线付
+                                        loadPage("ali/topay?orderId="+data.pay+"");
+                                    }
+                                }
+                            })
+                        }
+
+                        return false;//阻止表单跳转
+                    })
+                })
+            })
 
             $(function() {
                 var city1;
@@ -149,13 +224,13 @@
                 var goodsWeight;
                 var goodsVolume;
 
-                $(document).on('keyup', "#goodsWeight ,#goodsVolume", function () {
+                $('body').on('keyup', "#goodsWeight ,#goodsVolume", function () {
 
                      goodsWeight = $('#goodsWeight').val();
                      goodsVolume = $('#goodsVolume').val();
 
                     if (distance != '' && goodsWeight != '' && goodsVolume != '') {
-                        var money = goodsWeight * 10 + goodsVolume * 100 + distance / 10000 * 20;
+                        var money = goodsWeight * 1000 + goodsVolume * 100 + distance / 10000 * 20;
                         $('#money').attr('value', money.toFixed(0));
                     }
                 })
@@ -191,37 +266,33 @@
                     form.on('select(city1)', function (data) {
                         city1 = data.value;
 
-                        form.render();
-                        if (city1 != city2) {   //限制两个城市不能一样
-                            //alert(data.value);
                             $("#senderStation").find("option").remove();
                             option1(city1);
-                        }else{
-                            $("#senderStation").find("option").remove();
-                            form.render();
-                        }
+                        form.render();
+
                     });
                     //二级联动城市2
                     form.on('select(city2)', function (data) {
                         city2 = data.value;
 
-                        if (city2 != city1) {
                             $("#receiptStation").find("option").remove();
                             option2(city2);
-                        }else{
-                            $("#receiptStation").find("option").remove();
                             form.render();
-                        }
+
                     });
 
                     form.on('select(senderStation)',function (data) {
                         senderStation = data.value;
+
                         dis(senderStation,receiptStation);
+
+
                     })
 
                     form.on('select(receiptStation)',function (data) {
                         receiptStation = data.value;
                         dis(senderStation,receiptStation);
+
                     })
 
 
@@ -281,7 +352,7 @@
                                 //alert(stationList[i].stationName);
                                 // $(option).attr("value",stationList[i].staitonName);
                                 // $(option).attr("text",stationList[i].staitonName);staitonName
-                                $('#city2').append("<option value='请选择'></option><option value='" + cityList[i].city + "' name='senderStatioin'>" + cityList[i].city + "</option>");
+                                $('#city2').append("<option value='请选择'></option><option  value='" + cityList[i].city + "' name='senderStatioin'>" + cityList[i].city + "</option>");
                             }
                             layui.use('form', function () {
                                 var form = layui.form;
@@ -307,6 +378,7 @@
                                 // $(option).attr("value",stationList[i].staitonName);
                                 // $(option).attr("text",stationList[i].staitonName);staitonName
                                 $('#senderStation').append("<option value='请选择'></option><option value='" + stationList[i].stationName + "' name='senderStatioin'>" + stationList[i].stationName + "</option>");
+
                             }
                             layui.use('form', function () {
                                 var form = layui.form;
@@ -333,6 +405,7 @@
                                 // $(option).attr("text",stationList[i].staitonName);staitonName
 
                                 $('#receiptStation').append("<option value='请选择'></option><option value='" + stationList[i].stationName + "' name='receiptStatioin'>" + stationList[i].stationName + "</option>");
+
                             }
                             layui.use('form', function () {
                                 var form = layui.form;
@@ -357,7 +430,7 @@
                             var point2 = new BMap.Point(parseFloat(stationList[1].coordinate_l), parseFloat(stationList[1].coordinate_r));
                             distance = bMap.getDistance(point1, point2);
                             if (distance != '' && goodsWeight != '' && goodsWeight != null && goodsVolume != '' && goodsVolume != null) {
-                                var money = goodsWeight * 10 + goodsVolume * 100 + distance / 10000 * 20;
+                                var money = goodsWeight * 1000 + goodsVolume * 100 + distance / 10000 * 20;
                                 $('#money').attr('value', money.toFixed(0));
                             }
                         }

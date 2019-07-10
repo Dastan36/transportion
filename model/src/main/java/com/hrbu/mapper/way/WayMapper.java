@@ -16,12 +16,14 @@ public interface WayMapper {
 
     List<Station> selectStation() throws Exception;
 
-    void insertWay(Map map) throws Exception;
-    void updateCreateWay(Map map) throws Exception;//创建线路之后 将Train 是否创建线路的标志位 值1  默认0
+    int insertWay(Map map) throws Exception;
+    int updateCreateWay(Map map) throws Exception;//创建线路之后 将Train 是否创建线路的标志位 值1  默认0
     void updateCreateWayDel(Map map) throws Exception; //删除线路之后 将Train 是否创建线路的标志位 值0  默认0
     List<Station> selectWayById(String traId) throws Exception;
 
     List<Station> selectStationById(Map map) throws Exception;
 
-    void deleteWay(String traId) throws Exception;
+    int deleteWay(String traId) throws Exception;
+
+    Station selectTimeByStationIdAndTrainId(Map map) throws Exception;
 }

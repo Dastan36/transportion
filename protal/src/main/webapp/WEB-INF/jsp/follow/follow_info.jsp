@@ -14,10 +14,7 @@
 <head>
     <base href="<%=basePath%>">
     <title>Title</title>
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
-    <script src="Binary/js/jquery1.9.1.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PlhFWpA02aoURjAOpnWcRGqw7AI8EEyO"></script>
+
 </head>
 <body style="overflow-x:auto; overflow-y:hidden;">
 <div class="layui-layout layui-layout-admin">

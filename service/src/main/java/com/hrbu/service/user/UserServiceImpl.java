@@ -31,9 +31,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(User user) throws Exception{
+    public boolean saveUser(User user) throws Exception{
 
-        userMapper.saveUser(user);
+        int count = userMapper.saveUser(user);
+        return count>0;
     }
 
     @Override
@@ -54,9 +55,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user) throws Exception{
+    public boolean update(User user) throws Exception{
 
-        userMapper.updateUser(user);
+       int count = userMapper.updateUser(user);
+       return count>0;
     }
 
     @Override
@@ -77,9 +79,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Map map) throws Exception{
+    public boolean updatePassword(Map map) throws Exception{
 
-        userMapper.updatePassword(map);
+        int count= userMapper.updatePassword(map);
+        return count>0;
     }
 
     @Override

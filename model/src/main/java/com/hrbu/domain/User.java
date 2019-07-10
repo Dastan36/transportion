@@ -3,7 +3,6 @@ package com.hrbu.domain;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
 
 public class User {
 
@@ -14,19 +13,20 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     private String status;
-    private List<Complaint> complaint;
+
+
 
     public User() {
     }
 
-    public User(String userId, String userName, String password, String telephone, Date createTime, String status, List<Complaint> complaint) {
+    public User(String userId, String userName, String password, String telephone, Date createTime, String status) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.telephone = telephone;
         this.createTime = createTime;
         this.status = status;
-        this.complaint = complaint;
+
     }
 
     public String getUserId() {
@@ -77,11 +77,4 @@ public class User {
         this.status = status;
     }
 
-    public List<Complaint> getComplaint() {
-        return complaint;
-    }
-
-    public void setComplaint(List<Complaint> complaint) {
-        this.complaint = complaint;
-    }
 }

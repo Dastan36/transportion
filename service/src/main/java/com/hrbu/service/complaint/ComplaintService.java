@@ -12,13 +12,13 @@ public interface ComplaintService {
 
     List<Complaint> selectComplaint(Map map) throws Exception;
 
-    void cancelComplaint(String complaintId) throws Exception;
+    void cancelComplaint(String orderId) throws Exception;
 
-    void insertComplaint(Map map) throws Exception;
+    boolean insertComplaint(Map map) throws Exception;
 
     Order selectDetails(String complaintId) throws Exception;
 
-    void updateComplaint(Map map) throws Exception;
+    boolean updateComplaint(Map map) throws Exception;
 
     Order complaintVerifyOrderId(String orderId) throws Exception;
 

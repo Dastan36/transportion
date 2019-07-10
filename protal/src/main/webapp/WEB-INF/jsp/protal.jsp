@@ -119,8 +119,8 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <c:choose>
-                    <c:when test="${userName!=null}">
-                    <a >${userName}</a>
+                    <c:when test="${user.userName!=null}">
+                    <a style="cursor:pointer">${user.userName}</a>
                     <dl class="layui-nav-child">
                         <dd><a href="center" target="_self">会员中心</a></dd>
                         <dd><a href="logout">退出</a></dd>
@@ -157,16 +157,7 @@
                     </a>
                 </div>
 
-                <div class="online-box">
-                    <a href='/index.php?title=FAQ/tags' target="_self">
-                        <div>
-                            <p class='title1'>
-                                价格时效查询
-                            </p>
-                            <p class='title2'>随时随地查询时效价格</p>
-                        </div>
-                    </a>
-                </div>
+
                 <div class="online-box">
                     <a href='follow/tofollowprotal' target="_self">
                         <div>
@@ -198,8 +189,17 @@
             ,arrow: 'always' //始终显示箭头
             ,height: '70%'
             ,interval: '6000'
-            //,anim: 'updown' //切换动画方式
+            ,anim: 'fade' //切换动画方式
         });
+        //重置轮播
+        carousel.reload({
+            elem: '#carousel'
+            ,width: '100%' //设置容器宽度
+            ,arrow: 'always' //始终显示箭头
+            ,height: '70%'
+            ,interval: '6000'
+            ,anim: 'fade' //切换动画方式
+        })
     });
 </script>
 </html>

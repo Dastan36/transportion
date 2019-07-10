@@ -42,15 +42,17 @@ public class WayServiceImpl implements WayService {
     }
 
     @Override
-    public void insertWay(Map map) throws Exception{
+    public boolean insertWay(Map map) throws Exception{
        // map.put("id", "66");
-        wayMapper.insertWay(map);
+        int count = wayMapper.insertWay(map);
+        return count>0;
     }
 
     @Override
-    public void updateCreateWay(Map map)  throws Exception{
+    public boolean updateCreateWay(Map map)  throws Exception{
 
-        wayMapper.updateCreateWay(map);
+        int count = wayMapper.updateCreateWay(map);
+        return count>0;
     }
 
     @Override
@@ -72,8 +74,15 @@ public class WayServiceImpl implements WayService {
     }
 
     @Override
-    public void deleteWay(String traId) throws Exception{
+    public boolean deleteWay(String traId) throws Exception{
 
-        wayMapper.deleteWay(traId);
+        int count = wayMapper.deleteWay(traId);
+        return count>0;
+    }
+
+    @Override
+    public Station selectTimeByStationIdAndTrainId(Map map) throws Exception {
+        Station station = wayMapper.selectTimeByStationIdAndTrainId(map);
+        return station;
     }
 }

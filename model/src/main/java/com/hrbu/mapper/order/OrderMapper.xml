@@ -50,7 +50,7 @@
                 and userId = #{userId}
             </if>
             <if test="orderId != null and orderId != ''">
-                and orderId=#{orderId}
+                and orderId like concat('%',#{orderId},'%')
             </if>
         </where>
     </select>
@@ -78,7 +78,7 @@
                 and userId = #{userId}
             </if>
             <if test="orderId != null and orderId != ''">
-                and orderId=#{orderId}
+                and orderId like concat('%',#{orderId},'%')
             </if>
         </where>
         order by createTime desc limit #{pageRow},9
@@ -105,14 +105,14 @@
             </if>
 
             <if test="orderId != null and orderId != ''">
-                and orderId=#{orderId}
+                and orderId like concat('%',#{orderId},'%')
             </if>
         </where>order by createTime desc limit #{pageRow},9
     </select>
 
     <insert id="insertOrder" parameterType="java.util.HashMap">
-        INSERT INTO t_order (orderId,userId,senderName,senderPhone,senderProvince,senderStation,receiptName,receiptPhone,receiptProvince,receiptStation,goodsName,goodsWeight,goodsVolume,money,moneyStatus,transTime,createTime,status)
-        VALUES (#{orderId},#{userId},#{senderName},#{senderPhone},#{senderProvince},#{senderStation},#{receiptName},#{receiptPhone},#{receiptProvince},#{receiptStation},#{goodsName},#{goodsWeight},#{goodsVolume},#{money},#{moneyStatus},#{transTime},#{createTime},#{status})
+        INSERT INTO t_order (orderId,userId,senderName,senderPhone,senderProvince,senderStation,receiptName,receiptPhone,receiptProvince,receiptStation,goodsName,goodsWeight,goodsVolume,money,moneyStatus,transTime,createTime)
+        VALUES (#{orderId},#{userId},#{senderName},#{senderPhone},#{senderProvince},#{senderStation},#{receiptName},#{receiptPhone},#{receiptProvince},#{receiptStation},#{goodsName},#{goodsWeight},#{goodsVolume},#{money},#{moneyStatus},#{transTime},#{createTime})
     </insert>
 
     <select id="selectById" parameterType="java.lang.String" resultType="com.hrbu.domain.Order">
@@ -147,9 +147,9 @@
         delete from t_order where orderId = #{orderId}
     </delete>
 
-    <!--删除 控制显示-->
+    <!--删除 -->
     <update id="deleteOrder" parameterType="java.lang.String">
-        update t_order set isDelete = 0 where orderId = #{orderId}
+        delete from t_order where orderId = #{orderId}
     </update>
 
 </mapper>

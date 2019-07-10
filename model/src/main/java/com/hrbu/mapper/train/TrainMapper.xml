@@ -13,11 +13,11 @@
         <where>
             t_trains.orgId = t_organize.orgId
             <if test="traName != null and traName != ''">
-                and traName=#{traName}
+                and traName like concat('%',#{traName},'%')
             </if>
 
             <if test="orgName != null and orgName != ''">
-                and orgName=#{orgName}
+                and orgName like concat('%',#{orgName},'%')
             </if>
         </where>
     </select>
@@ -28,11 +28,11 @@
         <where>
             t_trains.orgId = t_organize.orgId
             <if test="traName != null and traName != ''">
-                and traName=#{traName}
+                and traName like concat('%',#{traName},'%')
             </if>
 
             <if test="orgName != null and orgName != ''">
-                and orgName=#{orgName}
+                and orgName like concat('%',#{orgName},'%')
             </if>
         </where>
         order by t_trains.createTime desc limit #{pageRow},9

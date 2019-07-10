@@ -26,16 +26,16 @@ public interface OrderService {
 
     Order selectById(String orderId) throws Exception;
 
-    void updateOrder(Map map) throws Exception;
+    boolean updateOrder(Map map) throws Exception;
 
     //在线支付 更改订单状态
     void updateOrderMoneyStatus(String orderId) throws Exception;
 
-    void updateGetStatus(Map map) throws Exception;
+    boolean updateGetStatus(Map map) throws Exception;
 
     //取消订单
-    void  cancelOrder(String orderId) throws Exception;
+    boolean  cancelOrder(String orderId) throws Exception;
 
     //删除 控制显示
-    void deleteOrder(String orderId) throws Exception;
+    boolean deleteOrder(String orderId) throws Exception;
 }

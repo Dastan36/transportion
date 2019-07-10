@@ -14,10 +14,7 @@
 <head>
     <base href="<%=basePath%>">
     <title>Title</title>
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
-    <script src="Binary/js/jquery1.9.1.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PlhFWpA02aoURjAOpnWcRGqw7AI8EEyO"></script>
+
 </head>
 <body style="height:100%;overflow-x:hidden; overflow-y:hidden;">
 <form class="layui-form" >
@@ -71,7 +68,7 @@
                     });
 
                     var sender = new BMap.Point(parseFloat(senderCoordinate_l),parseFloat(senderCoordinate_r));    //起点-重庆
-                    var current = new BMap.Point(116.74665,33.568801);
+                    var current = new BMap.Point(parseFloat(data.currCoordinate_l),parseFloat(data.currCoordinate_r));
                     var receipt = new BMap.Point(parseFloat(receiptCoordinate_l),parseFloat(receiptCoordinate_r));    //终点-北京
                     map.clearOverlays();                        //清除地图上所有的覆盖物
                     var driving = new BMap.DrivingRoute(map);    //创建驾车实例

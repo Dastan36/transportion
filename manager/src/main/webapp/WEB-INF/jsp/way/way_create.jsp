@@ -16,9 +16,6 @@
 <head>
     <title>快运班列方案创建</title>
     <base href="<%=basePath%>">
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/modules/layui.css">
-    <script type="text/javascript" src="Binary/js/jquery1.9.1.js"></script>
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
     <script type="text/javascript">
         $(function () {
             var i = 0;
@@ -28,7 +25,7 @@
                     "<input type='hidden' name = 'addList["+i+"].way.i' value = '"+i+"'>"+       //序号
                     "  <label class='layui-form-label'>站点</label>" +
                     "        <div class='layui-input-inline'>" +
-                    "   <select name='addList["+i+"].stationId' lay-verify=''>" +
+                    "   <select name='addList["+i+"].stationId' lay-verify='' lay-search>" +
                     "        <option value=''>请选择站点</option>" +
                     "            <c:forEach items='${stationList}' var='station' varStatus='status'>" +
                     "               <option value='${station.stationId}'>${station.stationName}</option>" +
@@ -88,18 +85,19 @@
 <body>
 
 <div style="border: 0px black solid">
-        <form class="layui-form" method="post" action="way/create">
+        <form class="layui-form wayForm" method="post" action="way/create">
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    <%--layui的提交按钮 写入type 就不会自动跳转了--%>
+                    <button class="layui-btn subBtn" type="button" lay-submit lay-filter="formDemo">立即提交</button>
+
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">快运班列：</label>
                 <div class="layui-input-inline">
-                    <select name="traId" lay-verify="">
+                    <select name="traId" lay-verify="" lay-search>
                         <option value="">请选择快运班列</option>
                         <c:forEach items="${trainList}" var="train" varStatus="status">
                             <option value="${train.traId}" >${train.traName}</option>
@@ -108,8 +106,6 @@
                 </div>
                 <div class="layui-form-mid layui-word-aux">站点请按顺序添加</div>
             </div>
-
-
         </form>
 </div>
     <br>
@@ -137,6 +133,21 @@
         });
 
     });
+    $(function () {
+        $(document).on('click','.subBtn',function(){
+            $.ajax('way/create',{
+                type:'POST',
+                data:$('.wayForm').serialize(),
+                dataType:'json',
+                async:false,//默认为true异步
+                success:function (data) {
+                    if (data) {
+                        loadPage('way/tolist');
+                    }
+                }
+            })
+        })
+    })
 </script>
 </body>
 </html>

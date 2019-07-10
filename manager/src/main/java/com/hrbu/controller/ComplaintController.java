@@ -21,8 +21,15 @@ public class ComplaintController {
     @Autowired
     private ComplaintService complaintService;
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "complaint/complaint_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/complaintlist")
-    public String complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
+    public Map complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -37,11 +44,13 @@ public class ComplaintController {
         map.put("provinces",provinces);
         List complaintList = complaintService.selectComplaint(map);
         int pageCount = complaintService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
-        model.addAttribute("complaintList",complaintList);//因为主外键关系  order--->complaint
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "complaint/complaint_list";
+//        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("complaintList",complaintList);//因为主外键关系  order--->complaint
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("complaintList",complaintList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
     @RequestMapping("/cancel")
@@ -60,13 +69,14 @@ public class ComplaintController {
         return "complaint/complaint_update";
     }
 
-
+    @ResponseBody
     @RequestMapping("/update")
-    public String update(String complaintId,String status) throws Exception {
+    public boolean update(String complaintId,String status) throws Exception {
         Map map = new HashMap();
         map.put("complaintId",complaintId);
         map.put("status",status);
-        complaintService.updateComplaint(map);
-        return "redirect:/complaint/complaintlist";
+        boolean flag = false;
+        flag = complaintService.updateComplaint(map);
+        return flag;
     }
 }

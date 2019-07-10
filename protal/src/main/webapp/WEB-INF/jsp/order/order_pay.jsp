@@ -14,17 +14,42 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
+    <%--这是保留订单之后 再付款--%>
     <base href="<%=basePath%>">
     <title>在线下单</title>
-    <link rel="stylesheet" href="Binary/layui-v2.4.5/layui/css/layui.css">
-    <script src="Binary/layui-v2.4.5/layui/layui.js"></script>
-    <script src="Binary/js/jquery1.9.1.js"></script>
+        <style>
+            input.unit{
+                padding-right: 40px;
+            }
+            span.unit{
+                position:absolute;
+                top:8px;
+                right: 18px;
+            }
+            input.goodsWeight{
+                padding-right: 40px;
+            }
+            span.goodsWeight{
+                position:absolute;
+                top:8px;
+                right: 18px;
+            }
+            input.goodsVolume{
+                padding-right: 40px;
+            }
+            span.goodsVolume{
+                position:absolute;
+                top:8px;
+                right: 18px;
+            }
+        </style>
 </head>
 <body style="background-color: #f2f2f2;overflow-x:auto; overflow-y:hidden;height: 100%">
 <div class="layui-layout layui-layout-admin">
     <div id="content" style="margin: 0 125px 0 125px;padding: 40px;background-color: #ffffff;">
-        <form class="layui-form" action="ali/totoindex">
-            <input type="hidden" name="orderId" value="${order.orderId}"/>
+        <%--action="ali/totoindex"--%>
+        <form class="layui-form payForm" >
+            <input id="orderId" type="hidden" name="orderId" value="${order.orderId}"/>
             <input type="hidden" name="createTime" value="${order.createTime}">
             <div class="layui-form-item">
                 <h2>发收货信息</h2>
@@ -70,11 +95,13 @@
                 </div>
                 <label class="layui-form-label">重量</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="goodsWeight" value="${order.goodsWeight}" readonly autocomplete="off" class="layui-input" >
+                    <input type="text" name="goodsWeight" value="${order.goodsWeight}" readonly autocomplete="off"class="layui-input goodsWeight" >
+                    <span class="goodsWeight">kg</span>
                 </div>
                 <label class="layui-form-label">体积</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="goodsVolume" value="${order.goodsVolume}" readonly autocomplete="off" class="layui-input" >
+                    <input type="text" name="goodsVolume" value="${order.goodsVolume}" readonly autocomplete="off" class="layui-input goodsVolume" >
+                    <span class="goodsVolume">m³</span>
                 </div>
             </div>
 
@@ -87,13 +114,18 @@
                 </div>
                 <label class="layui-form-label">金额</label>
                 <div class="layui-input-inline">
-                    <input id="money" type="text" name="money"  value="${order.money}" readonly lay-verify="required"  class="layui-input" >
+                    <input id="money" type="text" name="money"  value="${order.money}" readonly lay-verify="required"  class="layui-input unit" >
+                    <span class="unit">元</span>
+                </div>
+                <label class="layui-form-label">付款状态</label>
+                <div class="layui-input-inline">
+                    <input id="moneyStatus" type="text" name="money"  value="${order.moneyStatus}" readonly lay-verify="required"  class="layui-input" >
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-input-block" style="float: right">
-                    <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                    <button class="layui-btn" lay-submit lay-filter="*">提交</button>
                 </div>
             </div>
             <div id="match" style="display: none">
@@ -101,57 +133,20 @@
         </form>
 
         <script>
-            //注意：导航 依赖 element 模块，否则无法进行功能性操作
-            layui.use(['element','form','laydate'], function(){
-                var element = layui.element;
-            })
-            $(function () {
-                var line;
-                $("#line").click(function(){
-                    var senderStation = $("#senderStation").val();
-                    var receiptStation = $("#receiptStation").val();
-                    //alert(senderStation+receiptStation);
-                    $.ajax('line/match',{
-                        type:'post', //提交方法
-                        data:{'senderStation':senderStation,
-                            'receiptStation':receiptStation
-                        },//提交的参数
-                        dataType:'json',
-                        success:function (data) {
-                            line = eval(data);
-                            layui.use('layer',function () {
-                                var layer = layui.layer;
-                                layer.open({
-                                    type:1,
-                                    title:'匹配列车',
-                                    area: ['50%', '50%'], //宽高
-                                    content:$('#match'),
-                                    btn:'确认',
-                                    yes:function(index){  //确认按钮回调函数
-                                        $('#lineMatch').attr("value",$("input[name='linematch']:checked").val());
-                                        layer.close(index);
-                                    },
-                                    success:lineMatch(line)
-                                })
-                            });
-                        }
+          $(function () {
+              layui.use(['form'], function () {
 
-                    })
-                })
-                function lineMatch(line) {
-                    $('#match').find('div').remove();
-                    for(var i = 0;i<line.length;i++){
+                  //表单
+                  var form = layui.form;
+                  form.render();
+                  form.on('submit(*)', function (data) {
+                      var orderId = $('#orderId').val();
+                      loadPage('ali/topay?orderId='+orderId);
+                      return false;//阻止表单跳转
+                  })
+              })
+          })
 
-                        $('#match').append("<div><input type='radio' name='linematch' value='"+line[i]+"'>"+line[i]+"</div>");
-
-                    }
-                    layui.use(['element','form','laydate'], function(){
-                        var form = layui.form;
-                        form.render();
-                    })
-
-                }
-            })
 
 
         </script>
