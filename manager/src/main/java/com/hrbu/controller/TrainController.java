@@ -21,8 +21,15 @@ public class TrainController {
     @Autowired
     private TrainService trainService;
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "train/train_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/trainlist")
-    public String findTrainList(Model model,@RequestParam(value = "pageNum",required=false) String pageNumStr,@RequestParam(value = "traName",required=false) String traName,@RequestParam(value = "orgName",required=false) String orgName) throws Exception {
+    public Map findTrainList(Model model,@RequestParam(value = "pageNum",required=false) String pageNumStr,@RequestParam(value = "traName",required=false) String traName,@RequestParam(value = "orgName",required=false) String orgName) throws Exception {
         Map map = new HashMap();
         int pageNum = 1;    //分页 第几页 默认第一页
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -32,12 +39,14 @@ public class TrainController {
         map.put("traName",traName);
         map.put("orgName",orgName);
         int pageCount = trainService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+        //pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
         List organizeList = trainService.findTrainList(map);
-        model.addAttribute("organizeList",organizeList);
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "train/train_list";
+//        model.addAttribute("organizeList",organizeList);
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("organizeList",organizeList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
     @RequestMapping("/toadd")
@@ -47,13 +56,15 @@ public class TrainController {
         return "train/train_add";
     }
 
+    @ResponseBody
     @RequestMapping("/savetrain")
-    public String saveTrain(@RequestParam String traName,@RequestParam String orgId) throws Exception {
+    public boolean saveTrain(@RequestParam String traName,@RequestParam String orgId) throws Exception {
         Map map = new HashMap();
         map.put("traName",traName);
         map.put("orgId",orgId);
-        trainService.saveTrain(map);
-        return "redirect:/train/trainlist";
+        boolean flag = false;
+        flag = trainService.saveTrain(map);
+        return flag;
     }
 
     @RequestMapping("/delete")
@@ -61,8 +72,13 @@ public class TrainController {
     public Map delete(@RequestParam("traId") String traId) throws Exception {
         Map map = new HashMap();
         //System.out.println(traId);
-        trainService.deleteTrain(traId);
-        map.put("success",true);
+        boolean flag = false;
+        flag = trainService.deleteTrain(traId);
+        if (flag){
+            map.put("success",true);
+        }else{
+            map.put("success",false);
+        }
         return map;
     }
 
@@ -77,14 +93,16 @@ public class TrainController {
         return "train/train_update";
     }
 
+    @ResponseBody
     @RequestMapping("/update")
-    public String update(@RequestParam String traId,@RequestParam String traName,@RequestParam String orgId) throws Exception {
+    public boolean update(@RequestParam String traId,@RequestParam String traName,@RequestParam String orgId) throws Exception {
         Map map = new HashMap();
         map.put("traId",traId);
         map.put("traName",traName);
         map.put("orgId",orgId);
-        trainService.updateTrain(map);
-        return "redirect:/train/trainlist";
+        boolean flag;
+        flag = trainService.updateTrain(map);
+        return flag;
     }
 
 

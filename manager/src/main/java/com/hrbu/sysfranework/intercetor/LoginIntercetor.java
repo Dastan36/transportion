@@ -20,6 +20,7 @@ public class LoginIntercetor implements HandlerInterceptor {
             isLogin = true;
         }
 
+        //放开url
         if(url.indexOf("/login")>0 || isLogin || url.indexOf("/val")>0 || url.indexOf("/show")>0){
             return true;
         }

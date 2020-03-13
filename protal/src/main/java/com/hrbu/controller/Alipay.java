@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +32,9 @@ public class Alipay {
     private OrderService orderService;
 
     //第一次下单时 付款
+    @ResponseBody
     @RequestMapping("/toindex")
-    public String index(Model model, HttpSession session, Order order) throws Exception {
+    public Map index(Model model, HttpSession session, Order order) throws Exception {
         order.setOrderId(UUID.randomUUID().toString());
         model.addAttribute("order",order);
         Map map = new HashMap<>();
@@ -57,25 +59,31 @@ public class Alipay {
         if ("在线支付".equals(order.getMoneyStatus())){
             map.put("moneyStatus","在线支付(待支付)");
             orderService.insertOrder(map);
-            return "ali/pay"; //pay.jsp
+            //return "ali/topay?orderId"+order.getOrderId();
+            map.put("pay",order.getOrderId());
+
         }else{
             map.put("moneyStatus","到付(待支付)");
             orderService.insertOrder(map);
-            return "redirect:/order/orderlist";
+            //return "redirect:/order/tolist";
+            map.put("pay","0");
         }
-
+        return map;
     }
 
-    //为付款 保留订单之后付款   pay.jsp
-    @RequestMapping("/totoindex")
-    public String totoIndex(Model model,Order order){
+// 付款流程 中间跳转
+    @RequestMapping("/topay")
+    public String toPay(Model model,String orderId) throws Exception {
+        Order order = orderService.selectById(orderId);
         model.addAttribute("order",order);
-        return "ali/pay";
+        return "ali/pay";//pay.jsp
     }
 
+    //调用支付宝 付款
     @RequestMapping("/pay")
     public void  pay(Order order,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //获得初始化的AlipayClient
+        //AlipayConfig
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key,
                 "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
         //设置请求参数

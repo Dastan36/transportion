@@ -20,11 +20,11 @@ public interface TrainService {
 
     Train selectTrainById(String traId) throws Exception;
 
-    void saveTrain(Map map) throws Exception;
+    boolean saveTrain(Map map) throws Exception;
 
-    void deleteTrain(String traId) throws Exception;
+    boolean deleteTrain(String traId) throws Exception;
 
-    void updateTrain(Map map) throws Exception;
+    boolean updateTrain(Map map) throws Exception;
 
 
 }

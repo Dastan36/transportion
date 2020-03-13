@@ -18,8 +18,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "user/user_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/userlist")
-    public String findUserList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(required=false)String userName,@RequestParam(required=false)String telephone) throws Exception {
+    public Map findUserList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(required=false)String userName,@RequestParam(required=false)String telephone) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -31,11 +38,14 @@ public class UserController {
         map.put("telephone",telephone);
         List userList = userService.selectUser(map);
         int pageCount = userService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
-        model.addAttribute("userList",userList);
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "user/user_list";
+        //pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("userList",userList);
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("userList",userList);
+        map.put("pageCount",pageCount);
+
+        return map;
     }
 
     @RequestMapping("/toadd")
@@ -44,12 +54,14 @@ public class UserController {
         return "user/user_add";
     }
 
+    @ResponseBody
     @RequestMapping("saveuser")
-    public String saveUser(User user) throws Exception {
+    public boolean saveUser(User user) throws Exception {
         user.setUserId(UUID.randomUUID().toString());
         user.setCreateTime(new Date());
-        userService.saveUser(user);
-        return "redirect:/user/userlist";
+        boolean flag = false;
+        flag = userService.saveUser(user);
+        return flag;
     }
 
 
@@ -61,10 +73,12 @@ public class UserController {
         return "user/user_update";
     }
 
+    @ResponseBody
     @RequestMapping("/update")
-    public String update(User user) throws Exception {
-        userService.update(user);
-        return "redirect:/user/userlist";
+    public boolean update(User user) throws Exception {
+        boolean flag = false;
+        flag = userService.update(user);
+        return flag;
     }
 
     @RequestMapping("/delete")
@@ -75,6 +89,8 @@ public class UserController {
         map.put("success",true);
         return map;
     }
+
+
 
 
 

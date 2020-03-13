@@ -28,15 +28,16 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public void cancelComplaint(String complaintId) throws Exception {
+    public void cancelComplaint(String orderId) throws Exception {
 
-        complaintMapper.cancelComplaint(complaintId);
+        complaintMapper.cancelComplaint(orderId);
     }
 
     @Override
-    public void insertComplaint(Map map) throws Exception{
+    public boolean insertComplaint(Map map) throws Exception{
 
-        complaintMapper.insertComplaint(map);
+        int count = complaintMapper.insertComplaint(map);
+        return count>0;
     }
 
     @Override
@@ -46,9 +47,10 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public void updateComplaint(Map map) throws Exception{
+    public boolean updateComplaint(Map map) throws Exception{
 
-        complaintMapper.updateComplaint(map);
+        int count = complaintMapper.updateComplaint(map);
+        return count>0;
     }
 
     @Override

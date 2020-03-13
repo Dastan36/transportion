@@ -20,8 +20,15 @@ public class CompensateController {
     @Autowired
     private CompensateService compensateService;
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "compensate/compensate_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/compensatelist")
-    public String complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
+    public Map complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -37,11 +44,13 @@ public class CompensateController {
         map.put("provinces",provinces);
         List compensateList = compensateService.selectCompensate(map);
         int pageCount = compensateService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
-        model.addAttribute("compensateList",compensateList);//因为主外键关系  order--->complaint
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "compensate/compensate_list";
+//        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("compensateList",compensateList);//因为主外键关系  order--->complaint
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("compensateList",compensateList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
     @RequestMapping("/tocreate")
@@ -110,17 +119,22 @@ public class CompensateController {
         return  map;
     }
 
+    @ResponseBody
     @RequestMapping("/update")
-    public String update(String orderId,String compensateMoney,String compensateStatus) throws Exception {
+    public boolean update(String orderId,String compensateMoney,String compensateStatus) throws Exception {
         Map map = new HashMap();
         map.put("orderId",orderId);
         map.put("compensateMoney",compensateMoney);
         map.put("compensateStatus",compensateStatus);
         boolean flag = false;
-        flag = compensateService.updateCompensate(map);
-        if (flag){
-            return "redirect:/ali/torefundpart?orderId="+orderId;
+        if("已理赔".equals(compensateStatus)){
+
+            flag = compensateService.updateCompensate(map);
         }
-        return "redirect:/compensate/compensatelist";
+//        if (flag){
+//            return "redirect:/ali/torefundpart?orderId="+orderId;
+//        }
+//        return "redirect:/compensate/compensatelist";
+        return flag;
     }
 }

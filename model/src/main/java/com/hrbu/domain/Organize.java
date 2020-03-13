@@ -16,17 +16,17 @@ public class Organize {
     private Date createTime;
 
     private List<Train> train;
-    private List<Province> province;
+    private List<OrganizeProvince> organizeProvince;
 
     public Organize() {
     }
 
-    public Organize(String orgId, String orgName, Date createTime, List<Train> train, List<Province> province) {
+    public Organize(String orgId, String orgName, Date createTime, List<Train> train, List<OrganizeProvince> organizeProvince) {
         this.orgId = orgId;
         this.orgName = orgName;
         this.createTime = createTime;
         this.train = train;
-        this.province = province;
+        this.organizeProvince = organizeProvince;
     }
 
     public String getOrgId() {
@@ -61,11 +61,11 @@ public class Organize {
         this.train = train;
     }
 
-    public List<Province> getProvince() {
-        return province;
+    public List<OrganizeProvince> getOrganizeProvince() {
+        return organizeProvince;
     }
 
-    public void setProvince(List<Province> province) {
-        this.province = province;
+    public void setOrganizeProvince(List<OrganizeProvince> organizeProvince) {
+        this.organizeProvince = organizeProvince;
     }
 }

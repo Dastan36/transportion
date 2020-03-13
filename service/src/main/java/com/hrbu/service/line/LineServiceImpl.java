@@ -6,6 +6,7 @@ import com.hrbu.mapper.line.LineMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,12 +40,12 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public String[] selectTrainByStation(String stationName) throws Exception{
+    public ArrayList selectTrainByStation(String stationName) throws Exception{
         List<Train> trains = lineMapper.selectTrainByStation(stationName);
-        String[] train = new String[20];//数组大小随时改变
+        ArrayList<String> train = new ArrayList<String>();//数组大小随时改变
         int t = 0;                      //经过某一站的所有列车id
         for (Train train1 : trains) {
-            train[t] = train1.getTraId();
+            train.add(train1.getTraId()) ;
             t++;
         }
         return train;

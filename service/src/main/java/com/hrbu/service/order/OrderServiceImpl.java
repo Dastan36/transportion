@@ -2,10 +2,14 @@ package com.hrbu.service.order;
 
 import com.hrbu.domain.Order;
 import com.hrbu.domain.Station;
+import com.hrbu.mapper.compensate.CompensateMapper;
+import com.hrbu.mapper.complaint.ComplaintMapper;
 import com.hrbu.mapper.order.OrderMapper;
+import com.hrbu.mapper.trainsOrder.TrainsOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +18,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private ComplaintMapper complaintMapper;
+    @Autowired
+    private CompensateMapper compensateMapper;
+    @Autowired
+    private TrainsOrderMapper trainsOrderMapper;
 
     @Override
     public List<Station> selectProvince() throws Exception {
@@ -70,9 +80,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrder(Map map) throws Exception{
+    public boolean updateOrder(Map map) throws Exception{
 
-        orderMapper.updateOrder(map);
+        int count = orderMapper.updateOrder(map); //更新订单 线路 状态
+        //再更新中间表
+        if (map.get("traId") != null && map.get("traId") != ""){  //等于null时 说明 1.没有选择匹配的列车 或者 2.已选择没有重新选择    此时不需要添加数据
+            trainsOrderMapper.deleteTrainOrder((String) map.get("orderId"));//先删除t_trains_order 中这个orderId原有的记录  1.数据库没有相关数据  2.有相关数据
+            String [] traIds = map.get("traId").toString().split("&");//转车的traId形式：traId1&traId2
+            for (int i = 0; i < traIds.length; i++){              //
+                Map traMap = new HashMap();
+                traMap.put("orderId", map.get("orderId"));
+                traMap.put("traId", traIds[i]);
+                trainsOrderMapper.insertTrainOrder(traMap);   //添加 traId orderId t_trains_order
+            }
+
+        }
+        return count > 0;
     }
 
     @Override
@@ -82,20 +105,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateGetStatus(Map map) throws Exception{
+    public boolean updateGetStatus(Map map) throws Exception{
 
-        orderMapper.updateGetStatus(map);
+        int count = orderMapper.updateGetStatus(map);
+        return count>0;
     }
 
     @Override
-    public void cancelOrder(String orderId) throws Exception{
-
-        orderMapper.cancelOrder(orderId);
+    public boolean cancelOrder(String orderId) throws Exception{
+        complaintMapper.cancelComplaint(orderId);
+        compensateMapper.cancel(orderId);
+        int count = orderMapper.cancelOrder(orderId);
+        return count>0;
     }
 
     @Override
-    public void deleteOrder(String orderId) throws Exception{
-
-        orderMapper.deleteOrder(orderId);
+    public boolean deleteOrder(String orderId) throws Exception{
+        complaintMapper.cancelComplaint(orderId);
+        compensateMapper.cancel(orderId);
+        int count = orderMapper.deleteOrder(orderId);
+        return count>0;
     }
 }

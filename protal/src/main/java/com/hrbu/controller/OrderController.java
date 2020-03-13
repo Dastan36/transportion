@@ -68,8 +68,15 @@ public class OrderController {
         return map;
     }
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "order/order_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/orderlist")
-    public String orderList(Model model, @RequestParam(value = "pageNum", required = false) String pageNumStr, @RequestParam(value = "orderId", required = false) String orderId, HttpSession session) throws Exception {
+    public Map orderList(Model model, @RequestParam(value = "pageNum", required = false) String pageNumStr, @RequestParam(value = "orderId", required = false) String orderId, HttpSession session) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if (pageNumStr != null && !"".equals(pageNumStr)) {
@@ -83,11 +90,13 @@ public class OrderController {
         map.put("orderId", orderId);
         List orderList = orderService.selectOrder(map);
         int pageCount = orderService.selectCount(map);//总条数
-        pageCount = (pageCount % 9 == 0) ? (pageCount / 9) : ((pageCount / 9) + 1);//页数  每页显示9条
-        model.addAttribute("orderList", orderList);
-        model.addAttribute("pageNum", pageNum);
-        model.addAttribute("pageCount", pageCount);
-        return "order/order_list";
+        //pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("orderList",orderList);
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("orderList",orderList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
 
@@ -143,21 +152,41 @@ public class OrderController {
         return "center";
     }
 
+    //用户订单详情页面
+    @RequestMapping("/toupdate")
+    public String toUpdate(Model model,String orderId) throws Exception {
+        Order order = orderService.selectById(orderId);
+        model.addAttribute("order",order);
+        return "order/order_update";
+    }
+
     @RequestMapping("/cancel")
     @ResponseBody
     public Map cancel(String orderId) throws Exception {
-        orderService.cancelOrder(orderId);
+        boolean flag = false;
+        flag = orderService.cancelOrder(orderId);
         Map map = new HashMap();
-        map.put("success", true);
+        if (flag){
+
+            map.put("success", true);
+        }else{
+            map.put("success", false);
+        }
         return map;
     }
 
     @RequestMapping("/delete")
     @ResponseBody
     public Map delete(String orderId) throws Exception {
-        orderService.deleteOrder(orderId);
+        boolean flag = false;
+        flag = orderService.deleteOrder(orderId);
         Map map = new HashMap();
-        map.put("success", true);
+        if (flag){
+
+            map.put("success", true);
+        }else{
+            map.put("success", false);
+        }
         return map;
     }
 

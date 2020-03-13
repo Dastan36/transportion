@@ -8,14 +8,14 @@ import java.util.List;
 public class StationList {
 
     public List<Station> addList;
-    public List<Way> wayList;
+
 
     public StationList() {
     }
 
-    public StationList(List<Station> addList, List<Way> wayList) {
+    public StationList(List<Station> addList) {
         this.addList = addList;
-        this.wayList = wayList;
+
     }
 
     public List<Station> getAddList() {
@@ -26,11 +26,5 @@ public class StationList {
         this.addList = addList;
     }
 
-    public List<Way> getWayList() {
-        return wayList;
-    }
 
-    public void setWayList(List<Way> wayList) {
-        this.wayList = wayList;
-    }
 }

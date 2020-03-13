@@ -16,13 +16,15 @@ public interface WayService {
 
     List<Station> selectStation() throws Exception;
 
-    void insertWay(Map map) throws Exception;
-    void updateCreateWay(Map map) throws Exception;
+    boolean insertWay(Map map) throws Exception;
+    boolean updateCreateWay(Map map) throws Exception;
     void updateCreateWayDel(Map map) throws Exception;
 
     List<Station> selectWayById(String traId) throws Exception;
 
     List<Station> selectStationById(Map map) throws Exception;
 
-    void deleteWay(String traId) throws Exception;
+    boolean deleteWay(String traId) throws Exception;
+
+    Station selectTimeByStationIdAndTrainId(Map map) throws Exception;
 }

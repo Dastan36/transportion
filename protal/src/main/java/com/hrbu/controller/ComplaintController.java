@@ -1,7 +1,6 @@
 package com.hrbu.controller;
 
 import com.hrbu.domain.Order;
-import com.hrbu.domain.Province;
 import com.hrbu.service.complaint.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +19,15 @@ public class ComplaintController {
     @Autowired
     private ComplaintService complaintService;
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "complaint/complaint_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/complaintlist")
-    public String complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
+    public Map complaintList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr, @RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -37,18 +43,20 @@ public class ComplaintController {
 
         List complaintList = complaintService.selectComplaint(map);
         int pageCount = complaintService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
-        model.addAttribute("complaintList",complaintList);//因为主外键关系  order--->complaint
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "complaint/complaint_list";
+        //        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("complaintList",complaintList);//因为主外键关系  order--->complaint
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("complaintList",complaintList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
     @RequestMapping("/cancel")
     @ResponseBody
-    public Map cancel(String complaintId) throws Exception {
+    public Map cancel(String orderId) throws Exception {
         Map map = new HashMap();
-        complaintService.cancelComplaint(complaintId);
+        complaintService.cancelComplaint(orderId);
         map.put("success",true);
         return map;
     }
@@ -61,8 +69,9 @@ public class ComplaintController {
 
 
     //complaintId,orderId,userId,complaintType,complaintName,complaintDescribe,createTime
+    @ResponseBody
     @RequestMapping("/add")
-    public String add(HttpSession session,String orderId,String complaintType,String complaintPhone,
+    public boolean add(HttpSession session,String orderId,String complaintType,String complaintPhone,
                       String complaintName,String complaintDescribe) throws Exception {
         Map map = new HashMap();
         map.put("complaintId", UUID.randomUUID().toString());
@@ -73,8 +82,9 @@ public class ComplaintController {
         map.put("complaintPhone",complaintPhone);
         map.put("complaintDescribe",complaintDescribe);
         map.put("createTime",new Date());
-        complaintService.insertComplaint(map);
-        return "redirect:/complaint/complaintlist";
+        boolean flag = false;
+        flag = complaintService.insertComplaint(map);
+        return flag;
     }
 
     @RequestMapping("/todetails")

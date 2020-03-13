@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+
+    <mappers>
+
+        <!--class写法特殊
+            1.保证接口类名和.xml文件名一致
+            2.保证在同一目录下
+            3.必须是mapper写法
+            -->
+        <!--<package name="com.hrbu.mapper"></package>-->
+
+    </mappers>
+</configuration>

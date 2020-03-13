@@ -22,8 +22,15 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @RequestMapping("/tolist")
+    public String toList(){
+
+        return "order/order_list";
+    }
+
+    @ResponseBody
     @RequestMapping("/orderlist")
-    public String orderList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr,@RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
+    public Map orderList(Model model, @RequestParam(value = "pageNum",required=false) String pageNumStr,@RequestParam(value = "orderId",required=false) String orderId, HttpSession session) throws Exception {
         int pageNum = 1;    //分页 第几页
 
         if(pageNumStr !=null && !"".equals(pageNumStr)) {
@@ -39,11 +46,13 @@ public class OrderController {
         map.put("provinces",provinces);
         List orderList = orderService.managerSelectOrder(map);
         int pageCount = orderService.selectCount(map);//总条数
-        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
-        model.addAttribute("orderList",orderList);
-        model.addAttribute("pageNum",pageNum);
-        model.addAttribute("pageCount",pageCount);
-        return "order/order_list";
+//        pageCount = (pageCount%9==0)?(pageCount/9):((pageCount/9)+1);//页数  每页显示9条
+//        model.addAttribute("orderList",orderList);
+//        model.addAttribute("pageNum",pageNum);
+//        model.addAttribute("pageCount",pageCount);
+        map.put("orderList",orderList);
+        map.put("pageCount",pageCount);
+        return map;
     }
 
     @RequestMapping("/toupdate")
@@ -54,22 +63,25 @@ public class OrderController {
     }
 
     //更新订单状态
+    @ResponseBody
     @RequestMapping("update")
-    public String update(String status,String getStatus,String orderId,String lineMatch) throws Exception {
+    public boolean update(String status,String getStatus,String orderId,String lineMatch, String traId) throws Exception {
         Map map = new HashMap();
         map.put("status",status);
-        map.put("lineMatch",lineMatch);
+        map.put("lineMatch",lineMatch);  //列车方案
         map.put("orderId",orderId);
-        orderService.updateOrder(map);
+        map.put("traId",traId);
+        boolean flag = false;
+        flag = orderService.updateOrder(map);   //更新订单 还需更新trainOrder中间表 在service中写  插入traId orderId
         if("已完成".equals(status)){
             map.put("getStatus",getStatus);
             map.put("arriveTime",new Date());
             if ("已领货".equals(getStatus)){
                 map.put("getTime",new Date());
             }
-            orderService.updateGetStatus(map);
+            flag = orderService.updateGetStatus(map);  //更新领货状态
         }
-        return "redirect:/order/orderlist";
+        return flag;
     }
 
 

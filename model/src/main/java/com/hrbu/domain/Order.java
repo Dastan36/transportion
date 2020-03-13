@@ -26,16 +26,17 @@ public class Order {
     private String lineMatch; //线路p匹配
     private String status;
     private String getStatus;
-    private int isDelete;//默认为1 客户删除后为0 控制显示 管理员还是可以看见
+    //private int isDelete;//默认为1 客户删除后为0 控制显示 管理员还是可以看见
     private Date arriveTime;
     private Date getTime;
     private List<Complaint> complaint;
     private List<Compensate> compensate;
+    private TrainsOrder trainsOrder;
 
     public Order() {
     }
 
-    public Order(String orderId, String senderName, String senderPhone, String senderProvince, String senderStation, String receiptName, String receiptPhone, String receiptProvince, String receiptStation, String goodsName, Double goodsWeight, Double goodsVolume, Date createTime, Date transTime, String currentCoordinate_l, String currentCoordinate_r, String money, String moneyStatus, String lineMatch, String status, String getStatus, int isDelete, Date arriveTime, Date getTime, List<Complaint> complaint, List<Compensate> compensate) {
+    public Order(String orderId, String senderName, String senderPhone, String senderProvince, String senderStation, String receiptName, String receiptPhone, String receiptProvince, String receiptStation, String goodsName, Double goodsWeight, Double goodsVolume, Date createTime, Date transTime, String currentCoordinate_l, String currentCoordinate_r, String money, String moneyStatus, String lineMatch, String status, String getStatus,  Date arriveTime, Date getTime, List<Complaint> complaint, List<Compensate> compensate) {
         this.orderId = orderId;
         this.senderName = senderName;
         this.senderPhone = senderPhone;
@@ -57,11 +58,14 @@ public class Order {
         this.lineMatch = lineMatch;
         this.status = status;
         this.getStatus = getStatus;
-        this.isDelete = isDelete;
         this.arriveTime = arriveTime;
         this.getTime = getTime;
         this.complaint = complaint;
         this.compensate = compensate;
+    }
+
+    public Order(TrainsOrder trainsOrder) {
+        this.trainsOrder = trainsOrder;
     }
 
     public String getOrderId() {
@@ -176,14 +180,6 @@ public class Order {
         this.getStatus = getStatus;
     }
 
-    public int getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(int isDelete) {
-        this.isDelete = isDelete;
-    }
-
     public String getLineMatch() {
         return lineMatch;
     }
@@ -270,5 +266,13 @@ public class Order {
 
     public void setReceiptProvince(String receiptProvince) {
         this.receiptProvince = receiptProvince;
+    }
+
+    public TrainsOrder getTrainsOrders() {
+        return trainsOrder;
+    }
+
+    public void setTrainsOrders(TrainsOrder trainsOrder) {
+        this.trainsOrder = trainsOrder;
     }
 }

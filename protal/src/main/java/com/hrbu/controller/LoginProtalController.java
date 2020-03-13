@@ -47,14 +47,14 @@ public class LoginProtalController {
     }
 
     @RequestMapping("/userlogin")
-    public String adminLogin(HttpSession session, User user, @RequestParam String validatecode) throws Exception {
+    public String adminLogin(HttpSession session, User user, @RequestParam(required=false) String validatecode) throws Exception {
 
         user =  userService.userLogin(user);
 
 
         String randomCode = (String) session.getAttribute(RANDOMCODEKEY);
 
-        if(randomCode.equalsIgnoreCase(validatecode)){
+        /*if(randomCode.equalsIgnoreCase(validatecode)){
             if(user != null){
                 session.setAttribute("login",true);
                 session.setAttribute("user",user);
@@ -67,6 +67,22 @@ public class LoginProtalController {
             }
         }else {
             session.setAttribute("msg","验证码错误");
+            return "redirect:/touserlogin";  //验证失败跳转到tologin
+        }*/
+        if(user != null){
+            if(!user.getStatus().equals("1")){
+                session.setAttribute("msg","暂无登录资格");
+                return "redirect:/touserlogin";  //验证失败跳转到tologin
+            }else{
+                session.setAttribute("login",true);
+                session.setAttribute("user",user);
+                session.setAttribute("userId",user.getUserId());
+
+                return "redirect:/center";  //验证成功跳转到center
+            }
+
+        }else{
+            session.setAttribute("msg","手机号或密码错误");
             return "redirect:/touserlogin";  //验证失败跳转到tologin
         }
     }

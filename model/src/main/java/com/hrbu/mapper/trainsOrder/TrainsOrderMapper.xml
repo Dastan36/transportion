@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.trainsOrder.TrainsOrderMapper">
+
+    <resultMap id="Trainorder" type="com.hrbu.domain.Order">
+        <id column="orderId" property="orderId"/>
+        <association property="trainsOrder" javaType="com.hrbu.domain.TrainsOrder">
+
+        </association>
+    </resultMap>
+    <insert id="insertTrainOrder" parameterType="java.util.HashMap">
+        insert into t_trains_order (traId,orderId )values (#{traId},#{orderId})
+    </insert>
+
+    <delete id="deleteTrainOrder" parameterType="string">
+        delete from t_trains_order where orderId = #{orderId}
+    </delete>
+    
+    <select id="selectOrderIdByTraId" parameterType="string" resultMap="Trainorder">
+        select orderId from t_trains_order where traId = #{traId}
+    </select>
+</mapper>
