@@ -20,8 +20,11 @@
     <delete id="deleteTrainOrder" parameterType="string">
         delete from t_trains_order where orderId = #{orderId}
     </delete>
-    
+    <delete id="deleteTrainOrderSigle" parameterType="string">
+        delete from t_trains_order where orderId = #{orderId} limit 1
+    </delete>
+    <!--select orderId from t_trains_order where traId = #{traId}-->
     <select id="selectOrderIdByTraId" parameterType="string" resultMap="Trainorder">
-        select orderId from t_trains_order where traId = #{traId}
+        SELECT a.orderId FROM t_trains_order a INNER JOIN  t_order b ON a.orderId =  b.orderId WHERE a.traId = #{traId} AND b.status &lt;&gt; '已完成';
     </select>
 </mapper>

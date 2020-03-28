@@ -113,7 +113,6 @@
         <!-- 内容主体区域 -->
         <%--<div id="content">--%>
         <div id="content" style="padding: 15px;height: auto;width: auto;">
-
         </div>
     </div>
 
@@ -189,6 +188,9 @@
         if(orderId != null && orderId !=""){
             loadPage(url+"="+orderId);
         }
+    })
+    $(function () {
+        loadPage("user/userinfo");
     })
 
 </script>

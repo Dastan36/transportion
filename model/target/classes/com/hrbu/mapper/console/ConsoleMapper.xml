@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间作用就是 隔离 唯一  对sql进行分类化管理 理解sql隔离
+    注意：如果使用mapper代理的方法开发的化 这里的namespace有特殊重要的作用的
+     -->
+<mapper namespace="com.hrbu.mapper.console.ConsoleMapper">
+
+    <!-- 今日订单数 -->
+    <select id="selectNewOrderNum" resultType="int">
+        SELECT	COUNT(orderId)  orderNum FROM t_order WHERE TO_DAYS(createTime) = TO_DAYS(NOW());
+    </select>
+
+    <!--今日注册人数 -->
+    <select id="selectNewRegisterNum" resultType="int">
+        SELECT	COUNT(userId) userNum FROM t_user WHERE TO_DAYS(createTime) = TO_DAYS(NOW());
+    </select>
+
+    <!-- 今日送达数 -->
+    <select id="selectNewArriveNum" resultType="int">
+        SELECT	COUNT(orderId) arrNum FROM t_order WHERE STATUS = '已完成' AND TO_DAYS(createTime) = TO_DAYS(NOW());
+    </select>
+
+    <select id="selectComplaintCount" resultMap="complaintCountMap" >
+        SELECT complaintType as complaintType, COUNT(*) as complaintCount,createTime as createTime FROM t_complaint  GROUP BY complaintType HAVING TO_DAYS(createTime) = TO_DAYS(NOW())
+    </select>
+    <resultMap id="complaintCountMap" type="java.util.HashMap">
+        <result column="complaintType" property="complaintType" />
+        <result column="complaintCount" property="complaintCount" />
+        <result column="createTime" property="createTime"/>
+    </resultMap>
+</mapper>

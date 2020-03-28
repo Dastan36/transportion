@@ -98,6 +98,7 @@
     <!-- 增强save insert delete update    -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
+            <!--nama 要根据方法名来写  。。这里好像都没有用到-->
             <tx:method name="insert*"/>
             <tx:method name="save*"/>
             <tx:method name="update*"/>

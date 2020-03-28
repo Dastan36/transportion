@@ -217,12 +217,15 @@
                 </div>
                 <label class="layui-form-label">运输状态</label>
                 <div class="layui-input-inline">
-                    <select name="status" lay-verify="">
+                    <select id="statusSelect" name="status">
+                        <option value="等待中"
+                                <c:if test="${order.status eq '等待中'}">selected</c:if> >等待中
+                        </option>
                         <option value="运输中"
                                 <c:if test="${order.status eq '运输中'}">selected</c:if> >运输中
                         </option>
-                        <option value="等待中"
-                                <c:if test="${order.status eq '等待中'}">selected</c:if> >等待中
+                        <option value="后段运输中"
+                                <c:if test="${order.status eq '后段运输中'}">selected</c:if> >后段运输中
                         </option>
                         <option value="已完成"
                                 <c:if test="${order.status eq '已完成'}">selected</c:if> >已完成
@@ -250,7 +253,7 @@
                            lay-verify="required" class="layui-input">
                 </div>
                 <div class="layui-input-inline">
-                    <button id="line" class="layui-btn" type="button" data-type="reload">
+                    <button id="line" class="layui-btn" diasbled type="button" data-type="reload" >
                         <i class="layui-icon" style="font-size: 20px; ">&#xe615;</i> 匹配线路列车
                     </button>
                 </div>
@@ -289,6 +292,10 @@
                     var form = layui.form;
                     form.render('select');
                 })
+                var options=$("#statusSelect option:selected");
+                if(options.val() != '等待中') {
+                    $("#line").addClass("layui-btn-disabled");
+                }
 
                 $(document).on('click', '.subBtn', function () {
                     $.ajax('order/update', {
@@ -306,47 +313,49 @@
 
                 var line;
                 $(document).on('click', '#line', function () {
-                    var senderStation = $("#senderStation").val();
-                    var receiptStation = $("#receiptStation").val();
-                    var goodsWeight = $("#goodsWeight").val();
-                    var goodsVolume = $("#goodsWeight").val();
-                    //alert(senderStation+receiptStation);
-                    $.ajax('line/match', {
-                        type: 'post', //提交方法
-                        data: {
-                            'senderStation': senderStation,
-                            'receiptStation': receiptStation,
-                            'goodsWeight': goodsWeight,
-                            'goodsVolume': goodsVolume
-                        },//提交的参数
-                        dataType: 'json',
-                        success: function (data) {
-                            line = data;
+                    if(!$("#line").hasClass("layui-btn-disabled")){
+                        var senderStation = $("#senderStation").val();
+                        var receiptStation = $("#receiptStation").val();
+                        var goodsWeight = $("#goodsWeight").val();
+                        var goodsVolume = $("#goodsWeight").val();
+                        //alert(senderStation+receiptStation);
+                        $.ajax('line/match', {
+                            type: 'post', //提交方法
+                            data: {
+                                'senderStation': senderStation,
+                                'receiptStation': receiptStation,
+                                'goodsWeight': goodsWeight,
+                                'goodsVolume': goodsVolume
+                            },//提交的参数
+                            dataType: 'json',
+                            success: function (data) {
+                                line = data;
 
-                            layer.open({
-                                type: 1,
-                                title: '匹配列车',
-                                area: ['70%', '50%'], //宽高
-                                content: $('#match'),
-                                btn: '确认',
-                                yes: function (index) {  //确认按钮回调函数
-                                    $('#lineMatch').attr("value", $("input[name='linematch']:checked").val());//列车名称
-                                    $('#traId').attr('value',$("input[name='linematch']:checked").attr('traId'))//获得列车id
-                                    layer.close(index);
-                                },
-                                success: function (layero) {
-                                    // 如果弹层的内容content是某个DOM元素的话，要放在body的根节点下。不能放在div里面了
-                                    //这里就是在一个div中不是body根节点下  会出现遮罩层把弹出层遮住
-                                    var mask = $(".layui-layer-shade");
-                                    mask.appendTo(layero.parent());
-                                    //其中：layero是弹层的DOM对象
+                                layer.open({
+                                    type: 1,
+                                    title: '匹配列车',
+                                    area: ['70%', '50%'], //宽高
+                                    content: $('#match'),
+                                    btn: '确认',
+                                    yes: function (index) {  //确认按钮回调函数
+                                        $('#lineMatch').attr("value", $("input[name='linematch']:checked").val());//列车名称
+                                        $('#traId').attr('value',$("input[name='linematch']:checked").attr('traId'))//获得列车id
+                                        layer.close(index);
+                                    },
+                                    success: function (layero) {
+                                        // 如果弹层的内容content是某个DOM元素的话，要放在body的根节点下。不能放在div里面了
+                                        //这里就是在一个div中不是body根节点下  会出现遮罩层把弹出层遮住
+                                        var mask = $(".layui-layer-shade");
+                                        mask.appendTo(layero.parent());
+                                        //其中：layero是弹层的DOM对象
 
-                                    lineMatch(line);
-                                }
-                            })
-                        }
+                                        lineMatch(line);
+                                    }
+                                })
+                            }
 
-                    })
+                        })
+                    }
                 })
 
                 function lineMatch(line) {

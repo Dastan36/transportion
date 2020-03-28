@@ -93,18 +93,44 @@ public class LineController {
 
                 //运力
                 List<Order> orderList = trainOrderService.selectOrderIdByTraId(train.getTraId());//这辆列车上所有订单id 只有ID
-                for (int i = 0; i < orderList.size(); i++) {
-                    Order order = orderService.selectById(orderList.get(i).getOrderId());  //根据id找到订单信息
-                    String _receiptStation = order.getReceiptStation();
+                 for (int i = 0; i < orderList.size(); i++) {
+                    Order order = orderService.selectById(orderList.get(i).getOrderId());  //根据id找到原有订单信息
                     String[] line = lineService.selectStationById(train.getTraId());//该辆车的路线  路线上的站点数组
                     // 不存在线路站点上找不到上下车位置？
-                    int _index = printArray(line, _receiptStation);  //订单的下车位置
-//                    int __index = printArray(line, order.getSenderStation()); //该次订单的上车位置
-                    int __index = printArray(line, startStation); //该次订单的上车位置
-                    if(__index <= _index) {
-                        weight = weight - Double.parseDouble(goodsWeight);
-                        volume = volume - Double.parseDouble(goodsVolume);
-                    }
+                     //判断原有订单是否选择的是转车方案  过滤中文
+                     if(order.getLineMatch().replaceAll("[^\\u4e00-\\u9fa5]", "").equals("")){
+                         //原有订单选择的是直达方案
+                         int _index = printArray(line, order.getSenderStation()); //原有订单的上车位置
+                         int _index_ = printArray(line, order.getReceiptStation());  //原有订单的下车位置
+                         int __index = printArray(line, startStation); //该次订单的上车位置
+                         int __index__ = printArray(line, endStation);//该订单的下车位置
+                         if(__index <= _index_ && __index__ >= _index) {
+                             weight = weight - order.getGoodsWeight();
+                             volume = volume - order.getGoodsVolume();
+                         }
+                     }else{//原有订单选择的是转车方案
+                         if(!order.getStatus().equals("后段运输中") ){ //并且不处于后段运输
+                             if(printArray(line, order.getSenderStation()) < 0){
+                                 int _index = printArray(line, order.getLineMatch().replaceAll("[^\\u4e00-\\u9fa5]", "")); //原有订单的上车位置
+                                 int _index_ = printArray(line, order.getReceiptStation());  //原有订单的下车位置
+                                 int __index = printArray(line, startStation); //该次订单的上车位置
+                                 int __index__ = printArray(line, endStation);//该订单的下车位置
+                                 if(__index <= _index_ && __index__ >= _index) {
+                                     weight = weight - order.getGoodsWeight();
+                                     volume = volume - order.getGoodsVolume();
+                                 }
+                             }else {
+                                 int _index = printArray(line, order.getSenderStation()); //原有订单的上车位置
+                                 int _index_ = printArray(line, order.getLineMatch().replaceAll("[^\\u4e00-\\u9fa5]", ""));  //原有订单的下车位置
+                                 int __index = printArray(line, startStation); //该次订单的上车位置
+                                 int __index__ = printArray(line, endStation);//该订单的下车位置
+                                 if(__index <= _index_ && __index__ >= _index) {
+                                     weight = weight - order.getGoodsWeight();
+                                     volume = volume - order.getGoodsVolume();
+                                 }
+                             }
+                         }
+                     }
                 }
                 Map map = new HashMap();
                 map.put("type","直达");
@@ -117,6 +143,8 @@ public class LineController {
                 map.put("endStation",endStation);
                 map.put("weight",weight);
                 map.put("volume",volume);
+                weight = 60.0;//重置货物重量
+                volume = 120.0;//重置货物体积
                 list.add(map);
             }
 
@@ -127,8 +155,8 @@ public class LineController {
         //经过始末点的所有列车id
         ArrayList<String> start_pass = lineService.selectTrainByStation(startStation);
         ArrayList<String> end_pass = lineService.selectTrainByStation(endStation);
-        Double weight1 = 60.0, weight2 = 60.0;
-        Double volume1 = 120.0, volume2 = 120.0;
+        double weight1 = 0.0, weight2 = 0.0;
+        double volume1 = 0.0, volume2 = 0.0;
         //删除直达的车id
         for (Object o : traIdList) {
             if (start_pass.contains(o)){
@@ -165,17 +193,21 @@ public class LineController {
                                     List<Order> orderList1 = trainOrderService.selectOrderIdByTraId(first_line.getTraId());//这辆列车上所有订单id 只有ID
                                     for (int i = 0; i < orderList1.size(); i++) {
                                         Order order = orderService.selectById(orderList1.get(i).getOrderId());  //根据id找到订单信息
-                                        String _receiptStation = order.getReceiptStation();
                                         String[] line = lineService.selectStationById(first_line.getTraId());//该辆车的路线  路线上的站点数组
                                         // 不存在线路站点上找不到上下车位置？
-                                        int _index = printArray(line, _receiptStation);  //订单的下车位置
+                                        int _index = printArray(line, order.getSenderStation()); //订单的上车位置
+                                        int _index_ = printArray(line, change_station);  //订单的下车位置
                                         int __index = printArray(line, startStation); //该次订单的上车位置
-                                        if(__index <= _index) {
-                                            weight1 = weight - Double.parseDouble(goodsWeight);
-                                            volume1 = volume - Double.parseDouble(goodsVolume);
+                                        int __index__ = printArray(line, change_station);//该订单的下车位置
+                                        if(__index <= _index_ && __index__ >= _index) {
+                                            weight = weight - order.getGoodsWeight();
+                                            volume = volume - order.getGoodsVolume();
+                                            weight1 = weight;
+                                            volume1 = volume;
                                         }
                                     }
-
+                                    weight = 60.0;//重置货物重量
+                                    volume = 120.0;//重置货物体积
                                     //中转
                                     Map changeFirstWayMap = new HashMap();
                                     changeFirstWayMap.put("stationId",changeStationId);
@@ -203,16 +235,21 @@ public class LineController {
                                     List<Order> orderList2 = trainOrderService.selectOrderIdByTraId(second_line.getTraId());//这辆列车上所有订单id 只有ID
                                     for (int i = 0; i < orderList2.size(); i++) {
                                         Order order = orderService.selectById(orderList2.get(i).getOrderId());  //根据id找到订单信息
-                                        String _receiptStation = order.getReceiptStation();
                                         String[] line = lineService.selectStationById(second_line.getTraId());//该辆车的路线  路线上的站点数组
                                         // 不存在线路站点上找不到上下车位置？
-                                        int _index = printArray(line, _receiptStation);  //订单的下车位置
+                                        int _index = printArray(line, change_station); //订单的上车位置
+                                        int _index_ = printArray(line, order.getReceiptStation());  //订单的下车位置
                                         int __index = printArray(line, change_station); //该次订单的上车位置
-                                        if(__index <= _index) {
-                                            weight2 = weight - Double.parseDouble(goodsWeight);
-                                            volume2 = volume - Double.parseDouble(goodsVolume);
+                                        int __index__ = printArray(line, endStation);//该订单的下车位置
+                                        if(__index <= _index_ && __index__ >= _index) {
+                                            weight = weight - order.getGoodsWeight();
+                                            volume = volume - order.getGoodsVolume();
+                                            weight2 = weight;
+                                            volume2 = volume;
                                         }
                                     }
+                                    weight = 60.0;//重置货物重量
+                                    volume = 120.0;//重置货物体积
 
                                     long t2 = printDateLong(outChangeTime,inSecondTime);
                                     long t = addDate(t1,t2,t3);
@@ -233,7 +270,6 @@ public class LineController {
                                     map.put("endStation",endStation);
                                     map.put("weight1",weight1);map.put("weight2",weight2);
                                     map.put("volume1",volume1);map.put("volume2",volume2);
-
                                     list.add(map);
                                 }
                         }

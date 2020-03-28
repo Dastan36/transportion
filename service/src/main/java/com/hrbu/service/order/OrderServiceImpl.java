@@ -84,7 +84,8 @@ public class OrderServiceImpl implements OrderService {
 
         int count = orderMapper.updateOrder(map); //更新订单 线路 状态
         //再更新中间表
-        if (map.get("traId") != null && map.get("traId") != ""){  //等于null时 说明 1.没有选择匹配的列车 或者 2.已选择没有重新选择    此时不需要添加数据
+        //等于null时 说明 1.没有选择匹配的列车 或者 2.已选择没有重新选择匹配的列车    此时不需要添加数据
+        if (map.get("traId") != null && map.get("traId") != ""){
             trainsOrderMapper.deleteTrainOrder((String) map.get("orderId"));//先删除t_trains_order 中这个orderId原有的记录  1.数据库没有相关数据  2.有相关数据
             String [] traIds = map.get("traId").toString().split("&");//转车的traId形式：traId1&traId2
             for (int i = 0; i < traIds.length; i++){              //
@@ -94,6 +95,11 @@ public class OrderServiceImpl implements OrderService {
                 trainsOrderMapper.insertTrainOrder(traMap);   //添加 traId orderId t_trains_order
             }
 
+        }else{
+            //重新选择匹配的列车 但是中转需要修改状态二段运输时 需要删除t_trains_order中的前一条记录
+            if(map.get("status") == "后段运输中"){
+                trainsOrderMapper.deleteTrainOrder((String) map.get("orderId"));// 中转车先删除完成的部分
+            }
         }
         return count > 0;
     }

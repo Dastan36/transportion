@@ -170,7 +170,12 @@
             <td>${user.password}</td>
             <td>${user.telephone}</td>
             <td><fmt:formatDate value="${user.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-            <td>${user.status}</td>
+            <td>
+                <c:choose>
+                    <c:when test="${user.status eq '1'}">正常状态</c:when>
+                    <c:otherwise>异常状态</c:otherwise>
+                </c:choose>
+            </td>
             <td>
                 <div class="layui-btn-group">
                     <button class="layui-btn layui-btn-sm updateBtn" userId=${user.userId}>
@@ -273,7 +278,7 @@
                 $(data.userList).each(function(index,data){
                     //console.info(data.createTime);
                     var createTime = getDateTime(data.createTime);
-
+                    var status = data.status === '1' ? '正常状态' : '异常状态' ;
                     $("tbody").append(" <tr>\n" +
                         "\n" +
                         "        <td>"+(index+1)+"</td>\n" +
@@ -281,7 +286,7 @@
                         "        <td>"+data.password+"</td>\n" +
                         "        <td>"+data.telephone+"</td>\n" +
                         "        <td>"+createTime+"</td>\n" +
-                        "        <td>"+data.status+"</td>\n" +
+                        "        <td>"+status+"</td>\n" +
                         "        <td><div class=\"layui-btn-group\">\n" +
                         "                    <button class=\"layui-btn layui-btn-sm updateBtn\" userId=\""+data.userId+"\">\n" +
                         "                        <i class=\"layui-icon\">&#xe642;</i>\n" +

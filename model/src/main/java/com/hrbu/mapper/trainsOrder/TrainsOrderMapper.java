@@ -11,5 +11,7 @@ public interface TrainsOrderMapper {
 
     int deleteTrainOrder(String orderId);
 
+    int deleteTrainOrderSigle(String orderId);
+
     List<Order> selectOrderIdByTraId(String traId);
 }

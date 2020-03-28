@@ -36,6 +36,7 @@
         UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
 
     </script>
+    <script type="text/javascript" src="Binary/echarts/echarts.js"></script>
 
 
     <script>
@@ -47,7 +48,6 @@
                 form = layui.form;
             });
         })
-
 
     </script>
 
@@ -135,6 +135,124 @@
             <%--<iframe id="option" name="content" style="overflow: hidden;" scrolling="yes" frameborder="no"--%>
             <%--width="100%" height="100%" >--%>
             <%--</iframe>--%>
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-md6">
+                    <div id="chart2" style="width: auto;height:500px;"></div>
+                </div>
+                <div class="layui-col-md6">
+                    <div id="chart1" style="width: auto;height:500px;"></div>
+                </diV>
+            </div>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('chart2'));
+                $.ajax({
+                    type: "POST",
+                    url: 'console/getNewNum',
+                    async: false,
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        option = {
+                            title: {
+                                text: '站点今日数据',
+                                left: 'center'
+                            },
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: '{a} <br/>{b} : {c} ({d}%)'
+                            },
+                            legend: {
+                                orient: 'vertical',
+                                left: 'left',
+                                data: ['今日订单', '今日注册用户', '今日已送达']
+                            },
+                            series: [
+                                {
+                                    name: '访问来源',
+                                    type: 'pie',
+                                    radius: '55%',
+                                    center: ['50%', '60%'],
+                                    data: [
+                                        {value: data.newOrderNum, name: '今日订单'},
+                                        {value: data.newRegisterNum, name: '今日注册用户'},
+                                        {value: data.newArriveNum, name: '今日已送达'}
+                                    ],
+                                    emphasis: {
+                                        itemStyle: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    }
+                                }
+                            ]
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    }
+                })
+            </script>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('chart1'));
+                $.ajax({
+                    type: "POST",
+                    url: 'console/getComplaintCount',
+                    async: false,
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        // 指定图表的配置项和数据
+                        option = {
+                            title: {
+                                text: '站点今日投诉汇总',
+                                subtext: 'From ExcelHome',
+                            },
+                            color: ['#3398DB'],
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: ['时间延误', '货物丢失', '发货速度慢', '货物破损短少', '服务态度', '其他'],
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '数量',
+                                    type: 'bar',
+                                    barWidth: '60%',
+                                    data: [data.时间延误, data.货物丢失, data.发货速度慢, data.货物破损短少, data.服务态度, data.其他]
+                                }
+                            ]
+                        };
+
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    }
+                })
+
+            </script>
+
         </div>
     </div>
 

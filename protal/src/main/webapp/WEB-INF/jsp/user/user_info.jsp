@@ -47,36 +47,62 @@
 </script>
 <body>
 <%--action="user/update"--%>
-<form class="layui-form userForm" >
-    <h2>个人资料设置</h2>
-    <br>
-    <a class="updatePass" style="font-size: 15px;font-style: italic;cursor:pointer" >修改密码</a>
-    <br><br>
-    <h2>基本信息</h2>
-    <br><br>
-    <input type="hidden" name="userId" value="${user.userId}">
-    <input type="hidden" name="createTime" value="<fmt:formatDate value="${user.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>">
-    <div class="layui-form-item">
-        <label class="layui-form-label">姓名：</label>
-        <div class="layui-input-inline">
-            <input type="text" name="userName" value="${user.userName}" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" >
+    <div class="layui-card" style="background-color: #f2f2f2;">
+        <div class="layui-card-header">您好： ${user.userName}</div>
+        <div class="layui-card-body">
+            欢迎来到铁路货运系统<br>
+            我们将竭诚为您服务，让您放心。
+        </div>
+    </div>
+    <div class="layui-card" style="background-color: #f2f2f2;">
+        <div class="layui-card-header"><h2>个人密码设置</h2></div>
+        <div class="layui-card-body">
+            <a class="updatePass" style="font-size: 15px;font-style: italic;cursor:pointer" >修改密码</a>
+        </div>
+    </div>
+    <div class="layui-card" style="background-color: #f2f2f2;">
+        <div class="layui-card-header"><h2>基本信息</h2></div>
+        <div class="layui-card-body">
+            <div class="staticInfo">
+                <div style="font-weight: 400;font-size: 16px">
+                    姓名: ${user.userName}
+                </div>
+                <div style="font-weight: 400;font-size: 16px">
+                    联系电话：: ${user.telephone}
+                </div>
+                <br>
+                <button  type="button" class="layui-btn update" >修改</button>
+            </div>
+            <div class="updateInfo" style="display: none">
+                <form class="layui-form userForm" >
+                    <input type="hidden" name="userId" value="${user.userId}">
+                    <input type="hidden" name="createTime" value="<fmt:formatDate value="${user.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓名：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userName" value="${user.userName}" required lay-verify="required" lay-verType="tips" autocomplete="off" class="layui-input" >
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系电话：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="telephone" value="${user.telephone}" required lay-verify="telephone"  lay-verType="tips" autocomplete="off" class="layui-input" >
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
 
-    <div class="layui-form-item">
-        <label class="layui-form-label">联系电话：</label>
-        <div class="layui-input-inline">
-            <input type="text" name="telephone" value="${user.telephone}" required lay-verify="telephone"  lay-verType="tips" autocomplete="off" class="layui-input" >
-        </div>
-    </div>
 
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
-        </div>
-    </div>
-
-</form>
 <script>
     layui.use('form', function(){
         var form = layui.form;
@@ -148,6 +174,13 @@
                 }
             })
             return false;//阻止表单跳转
+        })
+
+        $(".update").click(function () {
+            // $(".staticInfo").css('display','none');//隐藏
+            // $(".updateInfo").removeattr('display')
+            $(".staticInfo").hide();
+            $(".updateInfo").show();
         })
     });
 </script>
